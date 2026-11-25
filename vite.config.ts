@@ -46,4 +46,22 @@ function cvPdfVirtualPlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), tailwindcss(), cvPdfVirtualPlugin()],
   base: '/',
+  build: {
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+            return 'three-vendor'
+          }
+          if (id.includes('node_modules/pdfjs-dist')) {
+            return 'pdfjs-vendor'
+          }
+          if (id.includes('node_modules/motion')) {
+            return 'motion-vendor'
+          }
+        },
+      },
+    },
+  },
 })

@@ -73,7 +73,10 @@ function PdfPageCanvas({ pdf, pageNumber, targetWidth }: PdfPageCanvasProps) {
   }, [pdf, pageNumber, targetWidth])
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-black/40 ring-1 ring-white/15">
+    <div
+      style={{ boxShadow: '0 18px 36px -14px var(--glass-shadow)' }}
+      className="overflow-hidden rounded-2xl bg-white ring-1 ring-[var(--glass-border)]"
+    >
       <canvas ref={canvasRef} className="block max-w-full" />
     </div>
   )
@@ -199,7 +202,8 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 backdrop-blur-md sm:p-6"
+          style={{ backgroundColor: 'var(--modal-backdrop)' }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 backdrop-blur-md sm:p-6"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 12 }}
@@ -210,7 +214,7 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
             className="apple-glass-strong flex h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl"
           >
             {/* Modal Header */}
-            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/12 px-4 py-3 sm:px-6">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--divider)] px-4 py-3 sm:px-6">
               <div className="flex items-center gap-2.5 text-sm font-semibold text-[var(--text-primary)]">
                 <FileText className="h-4 w-4 text-[var(--accent-primary)]" />
                 <span>{profile.name} — CV</span>
@@ -225,7 +229,7 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
                 type="button"
                 onClick={onClose}
                 aria-label="Close CV preview"
-                className="apple-pill inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] transition hover:bg-white/15 hover:text-[var(--text-primary)]"
+                className="apple-pill inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -234,7 +238,8 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
             {/* Scrollable Multi-Page Canvas Viewer */}
             <div
               ref={containerRef}
-              className="min-h-0 flex-1 overflow-y-auto bg-[#090d14]/70 px-3 py-5 sm:px-6 sm:py-6"
+              style={{ backgroundColor: 'var(--surface-subtle)' }}
+              className="min-h-0 flex-1 overflow-y-auto px-3 py-5 sm:px-6 sm:py-6"
             >
               {loading && (
                 <div className="flex h-full min-h-[260px] flex-col items-center justify-center gap-3 text-sm text-[var(--text-secondary)]">
@@ -244,7 +249,10 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
               )}
 
               {error && !loading && (
-                <div className="flex h-full min-h-[260px] items-center justify-center p-6 text-center text-sm text-rose-300">
+                <div
+                  style={{ color: 'var(--status-error-text)' }}
+                  className="flex h-full min-h-[260px] items-center justify-center p-6 text-center text-sm"
+                >
                   {error}
                 </div>
               )}
