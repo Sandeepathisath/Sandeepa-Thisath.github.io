@@ -3,6 +3,12 @@ import { motion } from 'motion/react'
 import { profile } from '../../data/profile'
 import { GlassCard } from '../ui/GlassCard'
 
+const PILLAR_ACCENTS = [
+  'var(--accent-primary)',
+  'var(--accent-secondary)',
+  '#10b981',
+]
+
 export function About() {
   return (
     <section
@@ -47,29 +53,37 @@ export function About() {
 
         {/* 3 Focus Pillars */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
-          {profile.focusPillars.map((pillar, index) => (
-            <motion.div
-              key={pillar.tag}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.4, delay: index * 0.08 }}
-            >
-              <GlassCard interactive className="h-full p-6">
-                <div className="space-y-3">
-                  <span className="inline-block text-xs font-medium tracking-wider text-[var(--accent-primary)]">
-                    {pillar.tag}
-                  </span>
-                  <h3 className="text-lg font-semibold text-[var(--text-primary)]">
-                    {pillar.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
-                    {pillar.description}
-                  </p>
-                </div>
-              </GlassCard>
-            </motion.div>
-          ))}
+          {profile.focusPillars.map((pillar, index) => {
+            const dotColor = PILLAR_ACCENTS[index % PILLAR_ACCENTS.length]
+            return (
+              <motion.div
+                key={pillar.tag}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+              >
+                <GlassCard interactive className="h-full p-6">
+                  <div className="space-y-3">
+                    <span className="apple-pill inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-[var(--text-primary)]">
+                      <span
+                        aria-hidden="true"
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: dotColor }}
+                      />
+                      <span>{pillar.tag}</span>
+                    </span>
+                    <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                      {pillar.description}
+                    </p>
+                  </div>
+                </GlassCard>
+              </motion.div>
+            )
+          })}
         </div>
       </motion.div>
     </section>

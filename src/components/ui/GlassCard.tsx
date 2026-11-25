@@ -38,7 +38,7 @@ export function GlassCard({
       className={`relative overflow-hidden rounded-3xl transition-all duration-300 ${
         strong ? 'apple-glass-strong' : 'apple-glass'
       } ${
-        interactive ? 'hover:-translate-y-1 hover:border-white/25' : ''
+        interactive ? 'hover:-translate-y-1 hover:border-[var(--glass-border-hover)]' : ''
       } ${className}`}
     >
       {interactive && (
@@ -47,7 +47,7 @@ export function GlassCard({
           className="pointer-events-none absolute inset-0 transition-opacity duration-300"
           style={{
             opacity: glare.active ? 0.55 : 0,
-            background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255, 255, 255, 0.14), transparent 55%)`,
+            background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, var(--glare-color), transparent 55%)`,
           }}
         />
       )}

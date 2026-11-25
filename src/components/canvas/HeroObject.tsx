@@ -8,6 +8,7 @@ interface HeroObjectProps {
   scrollProgressRef: RefObject<number>
   reducedMotion?: boolean
   lowPower?: boolean
+  isLight?: boolean
 }
 
 const ORBITING_GLASS_NODES: Array<{
@@ -28,6 +29,7 @@ export function HeroObject({
   scrollProgressRef,
   reducedMotion = false,
   lowPower = false,
+  isLight = false,
 }: HeroObjectProps) {
   const groupRef = useRef<THREE.Group>(null)
   const knotRef = useRef<THREE.Mesh>(null)
@@ -105,10 +107,10 @@ export function HeroObject({
         <mesh ref={coreRef}>
           <sphereGeometry args={[0.38, 28, 28]} />
           <meshBasicMaterial
-            color="#a5b4fc"
+            color={isLight ? '#38bdf8' : '#a5b4fc'}
             transparent
-            opacity={0.28}
-            blending={THREE.AdditiveBlending}
+            opacity={isLight ? 0.22 : 0.28}
+            blending={isLight ? THREE.NormalBlending : THREE.AdditiveBlending}
             depthWrite={false}
           />
         </mesh>
@@ -119,9 +121,9 @@ export function HeroObject({
             args={[0.98, 0.25, lowPower ? 96 : 168, lowPower ? 20 : 36, 2, 3]}
           />
           <meshPhysicalMaterial
-            color="#e0f2fe"
+            color={isLight ? '#bae6fd' : '#e0f2fe'}
             roughness={0.07}
-            metalness={0.06}
+            metalness={isLight ? 0.12 : 0.06}
             transmission={lowPower ? 0.65 : 0.92}
             thickness={1.5}
             ior={1.48}
@@ -129,7 +131,7 @@ export function HeroObject({
             iridescenceIOR={1.34}
             clearcoat={1}
             clearcoatRoughness={0.05}
-            attenuationColor="#8ecae6"
+            attenuationColor={isLight ? '#0ea5e9' : '#8ecae6'}
             attenuationDistance={2.2}
             transparent
             opacity={0.94}
@@ -140,13 +142,13 @@ export function HeroObject({
         <mesh ref={outerRingRef} rotation={[Math.PI / 3, 0.25, 0]}>
           <torusGeometry args={[1.92, 0.045, 24, 120]} />
           <meshPhysicalMaterial
-            color="#bae6fd"
+            color={isLight ? '#38bdf8' : '#bae6fd'}
             roughness={0.12}
             metalness={0.25}
             iridescence={0.65}
             clearcoat={1}
             transparent
-            opacity={0.72}
+            opacity={isLight ? 0.55 : 0.72}
           />
         </mesh>
 
@@ -154,13 +156,13 @@ export function HeroObject({
         <mesh ref={innerRingRef} rotation={[-Math.PI / 4, 0.6, 0.4]}>
           <torusGeometry args={[1.64, 0.032, 20, 100]} />
           <meshPhysicalMaterial
-            color="#f9a8d4"
+            color={isLight ? '#818cf8' : '#f9a8d4'}
             roughness={0.14}
             metalness={0.2}
             iridescence={0.55}
             clearcoat={1}
             transparent
-            opacity={0.55}
+            opacity={isLight ? 0.45 : 0.55}
           />
         </mesh>
 

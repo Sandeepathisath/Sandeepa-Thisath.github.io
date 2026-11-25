@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
-import { SceneCanvas } from './components/canvas/SceneCanvas'
+import { Suspense, lazy } from 'react'
+import { MotionConfig } from 'motion/react'
 import { Footer } from './components/layout/Footer'
 import { Loader } from './components/layout/Loader'
 import { Navbar } from './components/layout/Navbar'
@@ -9,30 +9,52 @@ import { Hero } from './components/sections/Hero'
 import { Projects } from './components/sections/Projects'
 import { TechStack } from './components/sections/TechStack'
 import { useScrollProgress } from './hooks/useScrollProgress'
+import { useTheme } from './hooks/useTheme'
+
+const SceneCanvas = lazy(() =>
+  import('./components/canvas/SceneCanvas').then((m) => ({ default: m.SceneCanvas })),
+)
 
 function App() {
   const { progressRef, isScrolled } = useScrollProgress()
+  const { isLight, toggleTheme } = useTheme()
 
   return (
-    <div className="relative min-h-screen text-[var(--text-primary)]">
-      {/* Isolated 3D Apple Liquid Glass Background */}
-      <SceneCanvas scrollProgressRef={progressRef} />
+    <MotionConfig reducedMotion="user">
+      <div className="relative min-h-screen text-[var(--text-primary)]">
+        {/* Keyboard Accessibility Skip Link */}
+        <a
+          href="#main-content"
+          className="apple-glass-strong sr-only fixed left-4 top-4 z-50 rounded-full px-4 py-2 text-xs font-semibold text-[var(--text-primary)] focus:not-sr-only focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+        >
+          Skip to main content
+        </a>
 
-      {/* Sticky Glass Navigation */}
-      <Navbar isScrolled={isScrolled} />
+        {/* Isolated 3D Apple Liquid Glass Background (Lazy Loaded for Fast First Paint) */}
+        <Suspense fallback={null}>
+          <SceneCanvas scrollProgressRef={progressRef} isLight={isLight} />
+        </Suspense>
 
-      {/* Foreground Content */}
-      <Suspense fallback={<Loader />}>
-        <main className="relative z-10">
-          <Hero />
-          <About />
-          <Projects />
-          <TechStack />
-          <Contact />
-        </main>
-        <Footer />
-      </Suspense>
-    </div>
+        {/* Sticky Glass Navigation with Theme Toggle */}
+        <Navbar
+          isScrolled={isScrolled}
+          isLight={isLight}
+          onToggleTheme={toggleTheme}
+        />
+
+        {/* Foreground Content */}
+        <Suspense fallback={<Loader />}>
+          <main id="main-content" className="relative z-10">
+            <Hero />
+            <About />
+            <Projects />
+            <TechStack />
+            <Contact />
+          </main>
+          <Footer />
+        </Suspense>
+      </div>
+    </MotionConfig>
   )
 }
 

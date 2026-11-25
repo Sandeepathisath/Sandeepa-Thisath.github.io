@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import type { RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -6,6 +6,7 @@ import * as THREE from 'three'
 interface ParticlesProps {
   count?: number
   reducedMotion?: boolean
+  isLight?: boolean
   scrollProgressRef?: RefObject<number>
 }
 
@@ -16,7 +17,8 @@ interface ShootingStarConfig {
   speed: number
   cycleSeconds: number
   offsetSeconds: number
-  color: string
+  darkColor: string
+  lightColor: string
   angle: number
 }
 
@@ -28,7 +30,8 @@ const SHOOTING_STARS: ShootingStarConfig[] = [
     speed: 12,
     cycleSeconds: 7.2,
     offsetSeconds: 1.0,
-    color: '#bae6fd',
+    darkColor: '#bae6fd',
+    lightColor: '#0284c7',
     angle: -0.44,
   },
   {
@@ -38,7 +41,8 @@ const SHOOTING_STARS: ShootingStarConfig[] = [
     speed: 10.5,
     cycleSeconds: 9.8,
     offsetSeconds: 4.2,
-    color: '#f9a8d4',
+    darkColor: '#f9a8d4',
+    lightColor: '#ec4899',
     angle: -2.68,
   },
   {
@@ -48,18 +52,28 @@ const SHOOTING_STARS: ShootingStarConfig[] = [
     speed: 11.5,
     cycleSeconds: 12.4,
     offsetSeconds: 7.8,
-    color: '#fde68a',
+    darkColor: '#fde68a',
+    lightColor: '#4f46e5',
     angle: -0.58,
   },
 ]
 
-const STAR_COLORS = [
-  '#7dd3fc', // glacial sky blue
-  '#a5b4fc', // soft periwinkle
-  '#6ee7b7', // calm mint
-  '#fde68a', // warm champagne starlight
-  '#f9a8d4', // soft rose quartz
-  '#f8fafc', // pure white
+const DARK_STAR_COLORS = [
+  '#7dd3fc',
+  '#a5b4fc',
+  '#6ee7b7',
+  '#fde68a',
+  '#f9a8d4',
+  '#f8fafc',
+]
+
+const LIGHT_STAR_COLORS = [
+  '#0284c7',
+  '#4f46e5',
+  '#0d9488',
+  '#d97706',
+  '#db2777',
+  '#0ea5e9',
 ]
 
 function createStarTexture(): THREE.CanvasTexture | null {
@@ -95,7 +109,6 @@ function createSparkleTexture(): THREE.CanvasTexture | null {
   const ctx = canvas.getContext('2d')
   if (!ctx) return null
 
-  // Soft center glow
   const glow = ctx.createRadialGradient(half, half, 0, half, half, half * 0.65)
   glow.addColorStop(0, 'rgba(255, 255, 255, 1)')
   glow.addColorStop(0.28, 'rgba(255, 255, 255, 0.65)')
@@ -103,7 +116,6 @@ function createSparkleTexture(): THREE.CanvasTexture | null {
   ctx.fillStyle = glow
   ctx.fillRect(0, 0, size, size)
 
-  // Delicate 4-point celestial flare
   ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'
   ctx.beginPath()
   ctx.moveTo(half, 3)
@@ -147,14 +159,44 @@ function seededRandom(seed: number): number {
   return x - Math.floor(x)
 }
 
+function buildStarPositions(
+  layerCount: number,
+  spreadX: number,
+  spreadY: number,
+  zMin: number,
+  zDepth: number,
+  seedOffset: number,
+): Float32Array {
+  const pos = new Float32Array(layerCount * 3)
+  for (let i = 0; i < layerCount; i++) {
+    const i3 = i * 3
+    pos[i3] = (seededRandom(i * 17.31 + seedOffset) - 0.5) * spreadX
+    pos[i3 + 1] = (seededRandom(i * 41.73 + seedOffset * 1.7) - 0.5) * spreadY
+    pos[i3 + 2] = zMin - seededRandom(i * 73.19 + seedOffset * 2.3) * zDepth
+  }
+  return pos
+}
+
+function fillStarColors(target: Float32Array, layerCount: number, palette: THREE.Color[]) {
+  for (let i = 0; i < layerCount; i++) {
+    const i3 = i * 3
+    const c = palette[i % palette.length]
+    target[i3] = c.r
+    target[i3 + 1] = c.g
+    target[i3 + 2] = c.b
+  }
+}
+
 function ShootingStar({
   config,
   texture,
   reducedMotion,
+  isLight,
 }: {
   config: ShootingStarConfig
   texture: THREE.CanvasTexture | null
   reducedMotion: boolean
+  isLight: boolean
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const matRef = useRef<THREE.MeshBasicMaterial>(null)
@@ -181,7 +223,7 @@ function ShootingStar({
     meshRef.current.position.z = config.z
 
     const fade = Math.sin(progress * Math.PI)
-    matRef.current.opacity = fade * 0.85
+    matRef.current.opacity = fade * (isLight ? 0.52 : 0.85)
   })
 
   return (
@@ -190,11 +232,11 @@ function ShootingStar({
       <meshBasicMaterial
         ref={matRef}
         map={texture ?? undefined}
-        color={config.color}
+        color={isLight ? config.lightColor : config.darkColor}
         transparent
         opacity={0}
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={isLight ? THREE.NormalBlending : THREE.AdditiveBlending}
       />
     </mesh>
   )
@@ -203,6 +245,7 @@ function ShootingStar({
 export function Particles({
   count = 320,
   reducedMotion = false,
+  isLight = false,
   scrollProgressRef,
 }: ParticlesProps) {
   const rootRef = useRef<THREE.Group>(null)
@@ -212,46 +255,51 @@ export function Particles({
   const farMatRef = useRef<THREE.PointsMaterial>(null)
   const midMatRef = useRef<THREE.PointsMaterial>(null)
   const accentMatRef = useRef<THREE.PointsMaterial>(null)
+  const farColorAttrRef = useRef<THREE.BufferAttribute>(null)
+  const midColorAttrRef = useRef<THREE.BufferAttribute>(null)
+  const accentColorAttrRef = useRef<THREE.BufferAttribute>(null)
 
   const starTexture = useMemo(() => createStarTexture(), [])
   const sparkleTexture = useMemo(() => createSparkleTexture(), [])
   const meteorTexture = useMemo(() => createMeteorTexture(), [])
 
+  useEffect(() => {
+    return () => {
+      starTexture?.dispose()
+      sparkleTexture?.dispose()
+      meteorTexture?.dispose()
+    }
+  }, [starTexture, sparkleTexture, meteorTexture])
+
   const farCount = Math.round(count * 0.55)
   const midCount = Math.round(count * 0.3)
   const accentCount = Math.max(24, count - farCount - midCount)
 
-  const palette = useMemo(() => STAR_COLORS.map((hex) => new THREE.Color(hex)), [])
+  const farPositions = useMemo(() => buildStarPositions(farCount, 32, 22, -4, 14, 1.1), [farCount])
+  const midPositions = useMemo(() => buildStarPositions(midCount, 24, 16, -1.5, 8, 9.4), [midCount])
+  const accentPositions = useMemo(
+    () => buildStarPositions(accentCount, 18, 12, -0.5, 5, 21.7),
+    [accentCount],
+  )
 
-  const buildStarLayer = (
-    layerCount: number,
-    spreadX: number,
-    spreadY: number,
-    zMin: number,
-    zDepth: number,
-    seedOffset: number,
-  ) => {
-    const pos = new Float32Array(layerCount * 3)
-    const col = new Float32Array(layerCount * 3)
+  const farColors = useMemo(() => new Float32Array(farCount * 3), [farCount])
+  const midColors = useMemo(() => new Float32Array(midCount * 3), [midCount])
+  const accentColors = useMemo(() => new Float32Array(accentCount * 3), [accentCount])
 
-    for (let i = 0; i < layerCount; i++) {
-      const i3 = i * 3
-      pos[i3] = (seededRandom(i * 17.31 + seedOffset) - 0.5) * spreadX
-      pos[i3 + 1] = (seededRandom(i * 41.73 + seedOffset * 1.7) - 0.5) * spreadY
-      pos[i3 + 2] = zMin - seededRandom(i * 73.19 + seedOffset * 2.3) * zDepth
+  const palette = useMemo(
+    () => (isLight ? LIGHT_STAR_COLORS : DARK_STAR_COLORS).map((hex) => new THREE.Color(hex)),
+    [isLight],
+  )
 
-      const c = palette[i % palette.length]
-      col[i3] = c.r
-      col[i3 + 1] = c.g
-      col[i3 + 2] = c.b
-    }
+  useEffect(() => {
+    fillStarColors(farColors, farCount, palette)
+    fillStarColors(midColors, midCount, palette)
+    fillStarColors(accentColors, accentCount, palette)
 
-    return { positions: pos, colors: col }
-  }
-
-  const farData = useMemo(() => buildStarLayer(farCount, 32, 22, -4, 14, 1.1), [farCount, palette])
-  const midData = useMemo(() => buildStarLayer(midCount, 24, 16, -1.5, 8, 9.4), [midCount, palette])
-  const accentData = useMemo(() => buildStarLayer(accentCount, 18, 12, -0.5, 5, 21.7), [accentCount, palette])
+    if (farColorAttrRef.current) farColorAttrRef.current.needsUpdate = true
+    if (midColorAttrRef.current) midColorAttrRef.current.needsUpdate = true
+    if (accentColorAttrRef.current) accentColorAttrRef.current.needsUpdate = true
+  }, [farColors, midColors, accentColors, farCount, midCount, accentCount, palette])
 
   useFrame((state, delta) => {
     const scroll = scrollProgressRef?.current ?? 0
@@ -296,24 +344,30 @@ export function Particles({
       )
     }
 
+    const baseOpacity = isLight ? 0.54 : 0.72
     if (farMatRef.current) {
-      farMatRef.current.opacity = 0.7 + Math.sin(elapsed * 1.1) * 0.14
+      farMatRef.current.opacity = baseOpacity + Math.sin(elapsed * 1.1) * 0.14
     }
     if (midMatRef.current) {
-      midMatRef.current.opacity = 0.68 + Math.sin(elapsed * 1.7 + 1.4) * 0.18
+      midMatRef.current.opacity = baseOpacity - 0.02 + Math.sin(elapsed * 1.7 + 1.4) * 0.18
     }
     if (accentMatRef.current) {
-      accentMatRef.current.opacity = 0.72 + Math.sin(elapsed * 2.2 + 2.8) * 0.22
+      accentMatRef.current.opacity = baseOpacity + 0.05 + Math.sin(elapsed * 2.2 + 2.8) * 0.2
     }
   })
 
+  const blendMode = isLight ? THREE.NormalBlending : THREE.AdditiveBlending
+
   return (
     <group ref={rootRef}>
-      {/* Layer 1: Distant colorful pinpoints */}
       <points ref={farStarsRef}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[farData.positions, 3]} />
-          <bufferAttribute attach="attributes-color" args={[farData.colors, 3]} />
+          <bufferAttribute attach="attributes-position" args={[farPositions, 3]} />
+          <bufferAttribute
+            ref={farColorAttrRef}
+            attach="attributes-color"
+            args={[farColors, 3]}
+          />
         </bufferGeometry>
         <pointsMaterial
           ref={farMatRef}
@@ -321,18 +375,21 @@ export function Particles({
           map={starTexture ?? undefined}
           vertexColors
           transparent
-          opacity={0.74}
+          opacity={isLight ? 0.54 : 0.74}
           sizeAttenuation
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={blendMode}
         />
       </points>
 
-      {/* Layer 2: Midground glowing pastel stars */}
       <points ref={midStarsRef}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[midData.positions, 3]} />
-          <bufferAttribute attach="attributes-color" args={[midData.colors, 3]} />
+          <bufferAttribute attach="attributes-position" args={[midPositions, 3]} />
+          <bufferAttribute
+            ref={midColorAttrRef}
+            attach="attributes-color"
+            args={[midColors, 3]}
+          />
         </bufferGeometry>
         <pointsMaterial
           ref={midMatRef}
@@ -340,18 +397,21 @@ export function Particles({
           map={starTexture ?? undefined}
           vertexColors
           transparent
-          opacity={0.72}
+          opacity={isLight ? 0.52 : 0.72}
           sizeAttenuation
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={blendMode}
         />
       </points>
 
-      {/* Layer 3: Foreground 4-point celestial sparkle stars */}
       <points ref={accentStarsRef}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[accentData.positions, 3]} />
-          <bufferAttribute attach="attributes-color" args={[accentData.colors, 3]} />
+          <bufferAttribute attach="attributes-position" args={[accentPositions, 3]} />
+          <bufferAttribute
+            ref={accentColorAttrRef}
+            attach="attributes-color"
+            args={[accentColors, 3]}
+          />
         </bufferGeometry>
         <pointsMaterial
           ref={accentMatRef}
@@ -359,20 +419,20 @@ export function Particles({
           map={sparkleTexture ?? starTexture ?? undefined}
           vertexColors
           transparent
-          opacity={0.75}
+          opacity={isLight ? 0.6 : 0.76}
           sizeAttenuation
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={blendMode}
         />
       </points>
 
-      {/* Gradient-tailed shooting stars */}
       {SHOOTING_STARS.map((star, index) => (
         <ShootingStar
           key={index}
           config={star}
           texture={meteorTexture}
           reducedMotion={reducedMotion}
+          isLight={isLight}
         />
       ))}
     </group>

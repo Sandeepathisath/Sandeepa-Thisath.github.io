@@ -37,6 +37,12 @@ export function Contact() {
   const githubSocial = profile.socials.find((item) => item.icon === 'github')
   const linkedinHref = normalizeHref(profile.linkedinUrl)
 
+  const clearFeedbackIfError = () => {
+    if (feedback?.type === 'error') {
+      setFeedback(null)
+    }
+  }
+
   const handleCopyEmail = async () => {
     try {
       await navigator.clipboard.writeText(profile.email)
@@ -122,12 +128,12 @@ export function Contact() {
                   <button
                     type="button"
                     onClick={handleCopyEmail}
-                    className="apple-pill inline-flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition hover:border-white/25 hover:bg-white/15 hover:text-[var(--text-primary)]"
+                    className="apple-pill inline-flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] active:scale-95"
                   >
                     {copied ? (
                       <>
-                        <Check className="h-3.5 w-3.5 text-emerald-300" />
-                        <span className="text-emerald-200">Copied Gmail</span>
+                        <Check className="h-3.5 w-3.5 text-emerald-500" />
+                        <span style={{ color: 'var(--status-success-text)' }}>Copied Gmail</span>
                       </>
                     ) : (
                       <>
@@ -148,9 +154,13 @@ export function Contact() {
                       name="name"
                       autoComplete="name"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => {
+                        clearFeedbackIfError()
+                        setName(e.target.value)
+                      }}
                       placeholder="Your name"
-                      className="w-full rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
+                      style={{ backgroundColor: 'var(--input-bg)' }}
+                      className="w-full rounded-2xl border border-[var(--glass-border)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition-colors focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
                     />
                   </label>
 
@@ -163,9 +173,13 @@ export function Contact() {
                       name="email"
                       autoComplete="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        clearFeedbackIfError()
+                        setEmail(e.target.value)
+                      }}
                       placeholder="you@example.com"
-                      className="w-full rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
+                      style={{ backgroundColor: 'var(--input-bg)' }}
+                      className="w-full rounded-2xl border border-[var(--glass-border)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition-colors focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
                     />
                   </label>
                 </div>
@@ -178,19 +192,34 @@ export function Contact() {
                     name="message"
                     rows={4}
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={(e) => {
+                      clearFeedbackIfError()
+                      setMessage(e.target.value)
+                    }}
                     placeholder="Share a project idea, internship opportunity, or just say hello..."
-                    className="w-full resize-y rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
+                    style={{ backgroundColor: 'var(--input-bg)' }}
+                    className="w-full resize-y rounded-2xl border border-[var(--glass-border)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition-colors focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
                   />
                 </label>
 
                 {feedback && (
                   <div
                     role="status"
-                    className={`flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-xs leading-relaxed sm:text-sm ${feedback.type === 'success'
-                      ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200'
-                      : 'border-rose-400/30 bg-rose-400/10 text-rose-200'
-                      }`}
+                    style={{
+                      color:
+                        feedback.type === 'success'
+                          ? 'var(--status-success-text)'
+                          : 'var(--status-error-text)',
+                      backgroundColor:
+                        feedback.type === 'success'
+                          ? 'var(--status-success-bg)'
+                          : 'var(--status-error-bg)',
+                      borderColor:
+                        feedback.type === 'success'
+                          ? 'var(--status-success-border)'
+                          : 'var(--status-error-border)',
+                    }}
+                    className="flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-xs leading-relaxed sm:text-sm"
                   >
                     {feedback.type === 'success' ? (
                       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
@@ -205,7 +234,7 @@ export function Contact() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[var(--accent-primary)] px-6 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[var(--accent-primary)] px-6 py-2.5 text-sm font-semibold text-[var(--accent-ink)] shadow-sm transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {submitting ? (
                       <>
@@ -222,7 +251,7 @@ export function Contact() {
 
                   <a
                     href={`mailto:${profile.email}`}
-                    className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+                    className="inline-flex items-center gap-1.5 rounded-md text-xs text-[var(--text-muted)] transition hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
                   >
                     <Mail className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
                     <span>{profile.email}</span>
@@ -234,11 +263,7 @@ export function Contact() {
 
           {/* Right: LinkedIn Spotlight Card + Quick Social Cards */}
           <div className="flex flex-col gap-4 lg:col-span-5">
-            <GlassCard
-              strong
-              interactive
-              className="flex-1 p-6 sm:p-7"
-            >
+            <GlassCard strong interactive className="flex-1 p-6 sm:p-7">
               <div className="flex h-full flex-col justify-between gap-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -270,7 +295,7 @@ export function Contact() {
                   href={linkedinHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--accent-secondary)] px-5 py-3 text-sm font-semibold text-slate-950 transition hover:brightness-105"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--accent-secondary)] px-5 py-3 text-sm font-semibold text-[var(--accent-ink)] transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-secondary)] active:scale-[0.99]"
                 >
                   <LinkedInIcon className="h-4 w-4" />
                   <span>Connect on LinkedIn</span>
@@ -286,7 +311,7 @@ export function Contact() {
                   href={normalizeHref(githubSocial.url)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block"
+                  className="block rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
                 >
                   <GlassCard interactive className="p-4">
                     <div className="flex items-center justify-between gap-3">
@@ -309,7 +334,10 @@ export function Contact() {
                 </a>
               )}
 
-              <a href={`mailto:${profile.email}`} className="block">
+              <a
+                href={`mailto:${profile.email}`}
+                className="block rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+              >
                 <GlassCard interactive className="p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">

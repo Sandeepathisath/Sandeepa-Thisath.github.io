@@ -4,6 +4,7 @@ import { CheckCircle2, ExternalLink, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import type { Project } from '../../types/portfolio'
 import { GitHubIcon } from './BrandIcons'
+import { TechIcon } from './TechIcon'
 
 interface ProjectModalProps {
   project: Project | null
@@ -49,7 +50,8 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 backdrop-blur-md sm:p-6"
+          style={{ backgroundColor: 'var(--modal-backdrop)' }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 backdrop-blur-md sm:p-6"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
@@ -60,7 +62,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             className="apple-glass-strong flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl"
           >
             {/* Fixed Modal Header */}
-            <div className="flex shrink-0 items-center justify-between gap-4 border-b border-white/12 px-5 py-4 sm:px-7">
+            <div className="flex shrink-0 items-center justify-between gap-4 border-b border-[var(--divider)] px-5 py-4 sm:px-7">
               <div className="min-w-0">
                 <div className="mb-1 flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)]">
                   <span className="apple-pill inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[var(--text-primary)]">
@@ -71,7 +73,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                     <span>{STATUS_LABELS[project.status]}</span>
                   </span>
                   <span>{project.role}</span>
-                  <span className="text-white/25">·</span>
+                  <span className="opacity-35">&middot;</span>
                   <span>{project.year}</span>
                 </div>
                 <h3
@@ -86,7 +88,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                 type="button"
                 onClick={onClose}
                 aria-label="Close project details"
-                className="apple-pill inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] transition hover:bg-white/15 hover:text-[var(--text-primary)]"
+                className="apple-pill inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -95,7 +97,10 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             {/* Scrollable Body */}
             <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
               {/* Cover Image or Styled Banner */}
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-slate-900/60">
+              <div
+                style={{ backgroundColor: 'var(--surface-subtle)' }}
+                className="overflow-hidden rounded-2xl border border-[var(--glass-border)]"
+              >
                 {project.coverImage ? (
                   <img
                     src={project.coverImage}
@@ -106,7 +111,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                   <div
                     className="flex h-44 w-full flex-col items-center justify-center gap-2 px-6 text-center sm:h-52"
                     style={{
-                      background: `radial-gradient(circle at 25% 25%, ${project.accentColor}30, rgba(15, 23, 42, 0.78) 72%)`,
+                      background: `radial-gradient(circle at 25% 25%, ${project.accentColor}34, var(--surface-subtle) 72%)`,
                     }}
                   >
                     <p className="text-xs font-medium uppercase tracking-widest text-[var(--accent-primary)]">
@@ -181,7 +186,8 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                     {project.details.gallery.map((imgSrc, index) => (
                       <div
                         key={imgSrc}
-                        className="overflow-hidden rounded-2xl border border-white/12 bg-slate-900/50"
+                        style={{ backgroundColor: 'var(--surface-subtle)' }}
+                        className="overflow-hidden rounded-2xl border border-[var(--glass-border)]"
                       >
                         <img
                           src={imgSrc}
@@ -204,9 +210,10 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                   {project.tech.map((techName) => (
                     <span
                       key={techName}
-                      className="apple-pill rounded-full px-3 py-1 text-xs font-medium text-[var(--text-primary)]"
+                      className="apple-pill inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-[var(--text-primary)]"
                     >
-                      {techName}
+                      <TechIcon name={techName} />
+                      <span>{techName}</span>
                     </span>
                   ))}
                 </div>
@@ -214,13 +221,13 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
               {/* Links */}
               {(project.githubUrl || project.liveUrl) && (
-                <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-4">
+                <div className="flex flex-wrap items-center gap-3 border-t border-[var(--divider)] pt-4">
                   {project.githubUrl && (
                     <a
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="apple-pill inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-[var(--text-primary)] transition hover:bg-white/15"
+                      className="apple-pill inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
                     >
                       <GitHubIcon className="h-4 w-4" />
                       <span>Source Code</span>
@@ -231,7 +238,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-primary)] px-4 py-2 text-xs font-semibold text-slate-950 transition hover:brightness-105"
+                      className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-primary)] px-4 py-2 text-xs font-semibold text-[var(--accent-ink)] transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                       <span>Live Demo</span>

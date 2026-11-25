@@ -78,7 +78,7 @@ export function Projects() {
             <button
               type="button"
               onClick={() => setShowAll((prev) => !prev)}
-              className="apple-pill inline-flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 text-xs font-medium text-[var(--text-primary)] transition hover:border-white/25 hover:bg-white/15 sm:text-sm"
+              className="apple-pill inline-flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] active:scale-[0.98] sm:text-sm"
             >
               <span>
                 {showAll
