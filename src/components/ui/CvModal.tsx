@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { FileText, Loader2, X } from 'lucide-react'
+import { FileText, Loader2, Minus, Plus, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import * as pdfjsLib from 'pdfjs-dist'
 import type { PDFDocumentLoadingTask, PDFDocumentProxy, RenderTask } from 'pdfjs-dist'
@@ -19,6 +19,10 @@ interface PdfPageCanvasProps {
   pageNumber: number
   targetWidth: number
 }
+
+const MIN_ZOOM = 0.75
+const MAX_ZOOM = 1.5
+const ZOOM_STEP = 0.15
 
 function PdfPageCanvas({ pdf, pageNumber, targetWidth }: PdfPageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -74,10 +78,10 @@ function PdfPageCanvas({ pdf, pageNumber, targetWidth }: PdfPageCanvasProps) {
 
   return (
     <div
-      style={{ boxShadow: '0 18px 36px -14px var(--glass-shadow)' }}
-      className="overflow-hidden rounded-2xl bg-white ring-1 ring-[var(--glass-border)]"
+      style={{ boxShadow: '0 12px 28px -12px var(--glass-shadow)' }}
+      className="overflow-hidden rounded-xl bg-white ring-1 ring-black/10"
     >
-      <canvas ref={canvasRef} className="block max-w-full" />
+      <canvas ref={canvasRef} className="block" />
     </div>
   )
 }
@@ -88,9 +92,10 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
   const [numPages, setNumPages] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [pageWidth, setPageWidth] = useState(720)
+  const [fitWidth, setFitWidth] = useState(840)
+  const [zoom, setZoom] = useState(1)
 
-  // Keyboard Escape & body scroll lock
+  // Keyboard Escape, +/- zoom shortcuts & body scroll lock
   useEffect(() => {
     if (!isOpen) return
 
@@ -121,6 +126,7 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
     const loadPdf = async () => {
       setLoading(true)
       setError(null)
+      setZoom(1)
       try {
         const { default: base64 } = await import('virtual:cv-pdf')
         if (cancelled) return
@@ -165,15 +171,17 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
     }
   }, [isOpen])
 
-  // Track responsive container width for sharp page scaling on desktop, tablet & mobile
+  // Track inner container width so PDF fills nearly the full glass frame with minimal margin
   useEffect(() => {
     if (!isOpen) return
 
     const updateWidth = () => {
       if (!containerRef.current) return
-      const horizontalPadding = window.innerWidth < 640 ? 24 : 48
-      const available = containerRef.current.clientWidth - horizontalPadding
-      setPageWidth(Math.max(240, Math.min(available, 780)))
+      const style = window.getComputedStyle(containerRef.current)
+      const padX =
+        parseFloat(style.paddingLeft || '0') + parseFloat(style.paddingRight || '0')
+      const available = containerRef.current.clientWidth - padX - 2
+      setFitWidth(Math.max(240, Math.floor(available)))
     }
 
     updateWidth()
@@ -191,6 +199,9 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
 
   if (typeof document === 'undefined') return null
 
+  const targetWidth = Math.round(fitWidth * zoom)
+  const zoomPercent = Math.round(zoom * 100)
+
   return createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -202,44 +213,85 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          style={{ backgroundColor: 'var(--modal-backdrop)' }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 backdrop-blur-md sm:p-6"
+          style={{ backgroundColor: 'var(--liquid-backdrop)' }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 backdrop-blur-sm sm:p-4"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 12 }}
+            initial={{ opacity: 0, scale: 0.97, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            exit={{ opacity: 0, scale: 0.97, y: 10 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             onClick={(event) => event.stopPropagation()}
-            className="apple-glass-strong flex h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl"
+            className="apple-liquid-frame relative flex h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-[28px]"
           >
-            {/* Modal Header */}
-            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--divider)] px-4 py-3 sm:px-6">
-              <div className="flex items-center gap-2.5 text-sm font-semibold text-[var(--text-primary)]">
-                <FileText className="h-4 w-4 text-[var(--accent-primary)]" />
-                <span>{profile.name} — CV</span>
+            {/* Compact Liquid Glass Header */}
+            <div
+              style={{ backgroundColor: 'var(--liquid-header-bg)' }}
+              className="flex shrink-0 items-center justify-between gap-2 border-b border-[var(--liquid-frame-border)] px-3.5 py-2.5 backdrop-blur-xl sm:px-5"
+            >
+              <div className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+                <FileText className="h-4 w-4 shrink-0 text-[var(--accent-primary)]" />
+                <span className="truncate">{profile.name} — CV</span>
                 {numPages > 0 && (
-                  <span className="apple-pill rounded-full px-2.5 py-0.5 text-xs font-normal text-[var(--text-secondary)]">
+                  <span className="apple-pill hidden rounded-full px-2.5 py-0.5 text-xs font-normal text-[var(--text-secondary)] sm:inline-block">
                     {numPages} {numPages === 1 ? 'page' : 'pages'}
                   </span>
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close CV preview"
-                className="apple-pill inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+                {/* Clean Zoom Pill */}
+                {pdfDoc && !loading && !error && (
+                  <div className="apple-pill inline-flex items-center rounded-full p-0.5 text-xs">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setZoom((prev) => Math.max(MIN_ZOOM, +(prev - ZOOM_STEP).toFixed(2)))
+                      }
+                      disabled={zoom <= MIN_ZOOM}
+                      aria-label="Zoom out CV"
+                      className="inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] transition hover:text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-35"
+                    >
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoom(1)}
+                      title="Reset zoom to fit width"
+                      className="min-w-[44px] cursor-pointer px-1 text-center text-[11px] font-medium text-[var(--text-primary)]"
+                    >
+                      {zoomPercent}%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setZoom((prev) => Math.min(MAX_ZOOM, +(prev + ZOOM_STEP).toFixed(2)))
+                      }
+                      disabled={zoom >= MAX_ZOOM}
+                      aria-label="Zoom in CV"
+                      className="inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] transition hover:text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-35"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label="Close CV preview"
+                  className="apple-pill inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
-            {/* Scrollable Multi-Page Canvas Viewer */}
+            {/* Tightly Framed Liquid Glass Body Holding Solid Crisp White PDF Pages */}
             <div
               ref={containerRef}
-              style={{ backgroundColor: 'var(--surface-subtle)' }}
-              className="min-h-0 flex-1 overflow-y-auto px-3 py-5 sm:px-6 sm:py-6"
+              style={{ scrollbarGutter: 'stable' }}
+              className="relative z-10 min-h-0 flex-1 overflow-auto p-2 sm:p-3"
             >
               {loading && (
                 <div className="flex h-full min-h-[260px] flex-col items-center justify-center gap-3 text-sm text-[var(--text-secondary)]">
@@ -258,13 +310,13 @@ export function CvModal({ isOpen, onClose }: CvModalProps) {
               )}
 
               {!loading && !error && pdfDoc && (
-                <div className="mx-auto flex flex-col items-center gap-5">
+                <div className="mx-auto flex w-fit flex-col items-center gap-2.5 sm:gap-3">
                   {Array.from({ length: numPages }, (_, index) => (
                     <PdfPageCanvas
                       key={index + 1}
                       pdf={pdfDoc}
                       pageNumber={index + 1}
-                      targetWidth={pageWidth}
+                      targetWidth={targetWidth}
                     />
                   ))}
                 </div>

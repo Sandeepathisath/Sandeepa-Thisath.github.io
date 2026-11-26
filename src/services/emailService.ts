@@ -1,5 +1,3 @@
-import { profile } from '../data/profile'
-
 export interface ContactPayload {
   name: string
   email: string
@@ -8,60 +6,66 @@ export interface ContactPayload {
 
 export interface EmailSendResult {
   ok: boolean
-  notConfigured?: boolean
   message: string
 }
 
-const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdegbjoy'
+
+interface FormspreeResponse {
+  ok?: boolean
+  error?: string
+  errors?: Array<{ field?: string; message?: string }>
+}
 
 /**
- * Sends a contact form submission directly to Gmail via Web3Forms.
- * Configure VITE_WEB3FORMS_ACCESS_KEY inside `.env.local` (never committed).
+ * Sends a contact form submission directly to Gmail via Formspree.
  */
 export async function sendContactMessage(
   payload: ContactPayload,
 ): Promise<EmailSendResult> {
-  const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim()
-
-  if (!accessKey) {
-    return {
-      ok: false,
-      notConfigured: true,
-      message:
-        'Contact form key is not configured yet. Copy my Gmail address or email me directly while setting up VITE_WEB3FORMS_ACCESS_KEY in .env.local.',
-    }
-  }
-
   try {
-    const response = await fetch(WEB3FORMS_ENDPOINT, {
+    const response = await fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
       body: JSON.stringify({
-        access_key: accessKey,
-        subject: `Portfolio Message from ${payload.name}`,
-        from_name: payload.name,
-        replyto: payload.email,
+        name: payload.name,
         email: payload.email,
+        _replyto: payload.email,
+        _subject: `Portfolio Message from ${payload.name}`,
         message: payload.message,
-        to_email: profile.email,
       }),
     })
 
-    const data = (await response.json()) as { success?: boolean; message?: string }
+    const rawText = await response.text()
+    let data: FormspreeResponse = {}
+    if (rawText) {
+      try {
+        data = JSON.parse(rawText) as FormspreeResponse
+      } catch {
+        data = {}
+      }
+    }
 
-    if (!response.ok || !data.success) {
+    if (!response.ok) {
+      const errorList = data.errors
+        ?.map((entry) => entry.message)
+        .filter(Boolean)
+        .join(', ')
       return {
         ok: false,
-        message: data.message ?? 'Could not send message right now. Please try again or copy my Gmail.',
+        message:
+          errorList ||
+          data.error ||
+          `Could not send message right now (${response.status}). Please try again or copy my Gmail.`,
       }
     }
 
     return {
       ok: true,
-      message: 'Message sent! Thanks for reaching out—I will get back to you soon.',
+      message: 'Message sent! Thanks for reaching out - I will get back to you soon.',
     }
   } catch {
     return {

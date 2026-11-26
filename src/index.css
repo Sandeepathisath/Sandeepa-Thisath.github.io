@@ -30,6 +30,12 @@
   --surface-subtle: rgba(15, 23, 42, 0.68);
   --divider: rgba(255, 255, 255, 0.11);
   --modal-backdrop: rgba(0, 0, 0, 0.75);
+  --liquid-backdrop: rgba(8, 12, 20, 0.6);
+  --liquid-frame-bg: rgba(18, 25, 38, 0.58);
+  --liquid-frame-border: rgba(255, 255, 255, 0.18);
+  --liquid-frame-rim: rgba(255, 255, 255, 0.22);
+  --liquid-frame-glow: rgba(142, 202, 230, 0.05);
+  --liquid-header-bg: rgba(18, 25, 38, 0.45);
   --glare-color: rgba(255, 255, 255, 0.15);
   --portrait-scrim: rgba(12, 17, 26, 0.58);
   --status-success-text: #a7f3d0;
@@ -65,6 +71,12 @@
   --surface-subtle: rgba(226, 232, 240, 0.72);
   --divider: rgba(15, 23, 42, 0.1);
   --modal-backdrop: rgba(15, 23, 42, 0.44);
+  --liquid-backdrop: rgba(15, 23, 42, 0.34);
+  --liquid-frame-bg: rgba(240, 246, 252, 0.72);
+  --liquid-frame-border: rgba(15, 23, 42, 0.13);
+  --liquid-frame-rim: rgba(255, 255, 255, 0.85);
+  --liquid-frame-glow: rgba(2, 132, 199, 0.04);
+  --liquid-header-bg: rgba(255, 255, 255, 0.52);
   --glare-color: rgba(255, 255, 255, 0.32);
   --portrait-scrim: rgba(15, 23, 42, 0.28);
   --status-success-text: #065f46;
@@ -73,6 +85,219 @@
   --status-error-text: #9f1239;
   --status-error-bg: rgba(244, 63, 94, 0.12);
   --status-error-border: rgba(225, 29, 72, 0.3);
+}
+
+/* ============================================================
+   SPACE GALAXY WORLD TOKENS (DARK & LIGHT)
+   ============================================================ */
+[data-theme="dark"][data-world="galaxy"] {
+  --bg-canvas: #070514;
+  --accent-primary: #c084fc;
+  --accent-secondary: #38bdf8;
+  --accent-glow: rgba(192, 132, 252, 0.7);
+  --accent-ink: #0f0720;
+  --text-primary: #f8fafc;
+  --text-secondary: #ddd6fe;
+  --text-muted: #a5b4fc;
+  --glass-bg: rgba(167, 139, 250, 0.065);
+  --glass-bg-strong: rgba(15, 11, 34, 0.78);
+  --glass-border: rgba(216, 180, 254, 0.16);
+  --glass-border-hover: rgba(192, 132, 252, 0.38);
+  --glass-highlight: rgba(243, 232, 255, 0.18);
+  --glass-shadow: rgba(4, 2, 16, 0.68);
+  --pill-bg: rgba(167, 139, 250, 0.09);
+  --pill-hover-bg: rgba(167, 139, 250, 0.18);
+  --pill-border: rgba(216, 180, 254, 0.18);
+  --nav-scrolled-bg: rgba(7, 5, 20, 0.82);
+  --drawer-bg: rgba(9, 7, 26, 0.95);
+  --footer-bg: rgba(6, 4, 18, 0.74);
+  --input-bg: rgba(167, 139, 250, 0.055);
+  --surface-subtle: rgba(17, 12, 38, 0.72);
+  --divider: rgba(216, 180, 254, 0.13);
+  --modal-backdrop: rgba(3, 1, 12, 0.76);
+  --liquid-backdrop: rgba(5, 3, 16, 0.62);
+  --liquid-frame-bg: rgba(15, 11, 34, 0.6);
+  --liquid-frame-border: rgba(216, 180, 254, 0.22);
+  --liquid-frame-rim: rgba(243, 232, 255, 0.24);
+  --liquid-frame-glow: rgba(192, 132, 252, 0.07);
+  --liquid-header-bg: rgba(15, 11, 34, 0.46);
+  --portrait-scrim: rgba(7, 5, 20, 0.6);
+}
+
+[data-theme="light"][data-world="galaxy"] {
+  --bg-canvas: #f2f0fc;
+  --accent-primary: #7c3aed;
+  --accent-secondary: #0284c7;
+  --accent-glow: rgba(124, 58, 237, 0.45);
+  --accent-ink: #ffffff;
+  --text-primary: #14102e;
+  --text-secondary: #312e59;
+  --text-muted: #555080;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(76, 29, 149, 0.11);
+  --glass-border-hover: rgba(124, 58, 237, 0.34);
+  --glass-highlight: rgba(255, 255, 255, 0.96);
+  --glass-shadow: rgba(49, 46, 129, 0.14);
+  --pill-bg: rgba(255, 255, 255, 0.78);
+  --pill-hover-bg: rgba(255, 255, 255, 0.96);
+  --pill-border: rgba(76, 29, 149, 0.12);
+  --nav-scrolled-bg: rgba(242, 240, 252, 0.86);
+  --drawer-bg: rgba(246, 244, 254, 0.96);
+  --footer-bg: rgba(242, 240, 252, 0.82);
+  --input-bg: rgba(255, 255, 255, 0.84);
+  --surface-subtle: rgba(228, 224, 248, 0.74);
+  --divider: rgba(49, 46, 129, 0.11);
+  --modal-backdrop: rgba(20, 16, 46, 0.42);
+  --liquid-backdrop: rgba(20, 16, 46, 0.32);
+  --liquid-frame-bg: rgba(243, 240, 254, 0.72);
+  --liquid-frame-border: rgba(76, 29, 149, 0.13);
+  --liquid-frame-rim: rgba(255, 255, 255, 0.88);
+  --liquid-frame-glow: rgba(124, 58, 237, 0.05);
+  --liquid-header-bg: rgba(255, 255, 255, 0.54);
+  --portrait-scrim: rgba(20, 16, 46, 0.3);
+}
+
+/* ============================================================
+   GREEN JUNGLE RAIN WORLD TOKENS (DARK & LIGHT)
+   ============================================================ */
+[data-theme="dark"][data-world="jungle"] {
+  --bg-canvas: #05130f;
+  --accent-primary: #34d399;
+  --accent-secondary: #38bdf8;
+  --accent-glow: rgba(52, 211, 153, 0.65);
+  --accent-ink: #032219;
+  --text-primary: #ecfdf5;
+  --text-secondary: #c8e6dc;
+  --text-muted: #8cb3a6;
+  --glass-bg: rgba(52, 211, 153, 0.055);
+  --glass-bg-strong: rgba(8, 24, 19, 0.78);
+  --glass-border: rgba(110, 231, 183, 0.15);
+  --glass-border-hover: rgba(52, 211, 153, 0.36);
+  --glass-highlight: rgba(209, 250, 229, 0.15);
+  --glass-shadow: rgba(2, 12, 8, 0.65);
+  --pill-bg: rgba(52, 211, 153, 0.08);
+  --pill-hover-bg: rgba(52, 211, 153, 0.16);
+  --pill-border: rgba(110, 231, 183, 0.17);
+  --nav-scrolled-bg: rgba(5, 19, 15, 0.82);
+  --drawer-bg: rgba(7, 23, 18, 0.95);
+  --footer-bg: rgba(4, 15, 12, 0.74);
+  --input-bg: rgba(52, 211, 153, 0.045);
+  --surface-subtle: rgba(9, 28, 22, 0.72);
+  --divider: rgba(110, 231, 183, 0.12);
+  --modal-backdrop: rgba(2, 10, 7, 0.76);
+  --liquid-backdrop: rgba(3, 14, 10, 0.6);
+  --liquid-frame-bg: rgba(8, 24, 19, 0.58);
+  --liquid-frame-border: rgba(110, 231, 183, 0.2);
+  --liquid-frame-rim: rgba(209, 250, 229, 0.22);
+  --liquid-frame-glow: rgba(52, 211, 153, 0.06);
+  --liquid-header-bg: rgba(8, 24, 19, 0.45);
+  --portrait-scrim: rgba(5, 19, 15, 0.58);
+}
+
+[data-theme="light"][data-world="jungle"] {
+  --bg-canvas: #eaf5ef;
+  --accent-primary: #059669;
+  --accent-secondary: #0d9488;
+  --accent-glow: rgba(5, 150, 105, 0.48);
+  --accent-ink: #ffffff;
+  --text-primary: #0b2219;
+  --text-secondary: #1e4233;
+  --text-muted: #456b5b;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(6, 78, 59, 0.11);
+  --glass-border-hover: rgba(5, 150, 105, 0.34);
+  --glass-highlight: rgba(255, 255, 255, 0.96);
+  --glass-shadow: rgba(6, 78, 59, 0.14);
+  --pill-bg: rgba(255, 255, 255, 0.78);
+  --pill-hover-bg: rgba(255, 255, 255, 0.96);
+  --pill-border: rgba(6, 78, 59, 0.12);
+  --nav-scrolled-bg: rgba(234, 245, 239, 0.86);
+  --drawer-bg: rgba(242, 249, 245, 0.96);
+  --footer-bg: rgba(234, 245, 239, 0.82);
+  --input-bg: rgba(255, 255, 255, 0.84);
+  --surface-subtle: rgba(217, 238, 227, 0.72);
+  --divider: rgba(6, 78, 59, 0.11);
+  --modal-backdrop: rgba(11, 34, 25, 0.42);
+  --liquid-backdrop: rgba(11, 34, 25, 0.32);
+  --liquid-frame-bg: rgba(238, 248, 242, 0.72);
+  --liquid-frame-border: rgba(6, 78, 59, 0.13);
+  --liquid-frame-rim: rgba(255, 255, 255, 0.88);
+  --liquid-frame-glow: rgba(5, 150, 105, 0.05);
+  --liquid-header-bg: rgba(255, 255, 255, 0.54);
+  --portrait-scrim: rgba(11, 34, 25, 0.3);
+}
+
+/* ============================================================
+   OCEAN DEPTHS / SUNLIT LAGOON WORLD TOKENS (DARK & LIGHT)
+   ============================================================ */
+[data-theme="dark"][data-world="ocean"] {
+  --bg-canvas: #03111c;
+  --accent-primary: #38bdf8;
+  --accent-secondary: #2dd4bf;
+  --accent-glow: rgba(56, 189, 248, 0.7);
+  --accent-ink: #041b2b;
+  --text-primary: #f0f9ff;
+  --text-secondary: #c7e4f4;
+  --text-muted: #8ab4cc;
+  --glass-bg: rgba(56, 189, 248, 0.06);
+  --glass-bg-strong: rgba(7, 25, 42, 0.78);
+  --glass-border: rgba(125, 211, 252, 0.16);
+  --glass-border-hover: rgba(56, 189, 248, 0.38);
+  --glass-highlight: rgba(224, 242, 254, 0.16);
+  --glass-shadow: rgba(1, 10, 18, 0.66);
+  --pill-bg: rgba(56, 189, 248, 0.085);
+  --pill-hover-bg: rgba(56, 189, 248, 0.17);
+  --pill-border: rgba(125, 211, 252, 0.18);
+  --nav-scrolled-bg: rgba(3, 17, 28, 0.82);
+  --drawer-bg: rgba(5, 22, 36, 0.95);
+  --footer-bg: rgba(2, 14, 24, 0.74);
+  --input-bg: rgba(56, 189, 248, 0.05);
+  --surface-subtle: rgba(7, 28, 46, 0.72);
+  --divider: rgba(125, 211, 252, 0.13);
+  --modal-backdrop: rgba(1, 8, 16, 0.76);
+  --liquid-backdrop: rgba(2, 12, 22, 0.6);
+  --liquid-frame-bg: rgba(7, 25, 42, 0.58);
+  --liquid-frame-border: rgba(125, 211, 252, 0.21);
+  --liquid-frame-rim: rgba(224, 242, 254, 0.24);
+  --liquid-frame-glow: rgba(56, 189, 248, 0.07);
+  --liquid-header-bg: rgba(7, 25, 42, 0.45);
+  --portrait-scrim: rgba(3, 17, 28, 0.58);
+}
+
+[data-theme="light"][data-world="ocean"] {
+  --bg-canvas: #e8f6fb;
+  --accent-primary: #0284c7;
+  --accent-secondary: #0d9488;
+  --accent-glow: rgba(2, 132, 199, 0.48);
+  --accent-ink: #ffffff;
+  --text-primary: #082032;
+  --text-secondary: #1e465e;
+  --text-muted: #46708a;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(7, 89, 133, 0.11);
+  --glass-border-hover: rgba(2, 132, 199, 0.34);
+  --glass-highlight: rgba(255, 255, 255, 0.96);
+  --glass-shadow: rgba(7, 89, 133, 0.14);
+  --pill-bg: rgba(255, 255, 255, 0.78);
+  --pill-hover-bg: rgba(255, 255, 255, 0.96);
+  --pill-border: rgba(7, 89, 133, 0.12);
+  --nav-scrolled-bg: rgba(232, 246, 251, 0.86);
+  --drawer-bg: rgba(242, 250, 253, 0.96);
+  --footer-bg: rgba(232, 246, 251, 0.82);
+  --input-bg: rgba(255, 255, 255, 0.84);
+  --surface-subtle: rgba(214, 238, 248, 0.72);
+  --divider: rgba(7, 89, 133, 0.11);
+  --modal-backdrop: rgba(8, 32, 50, 0.42);
+  --liquid-backdrop: rgba(8, 32, 50, 0.32);
+  --liquid-frame-bg: rgba(236, 248, 253, 0.72);
+  --liquid-frame-border: rgba(7, 89, 133, 0.13);
+  --liquid-frame-rim: rgba(255, 255, 255, 0.88);
+  --liquid-frame-glow: rgba(2, 132, 199, 0.05);
+  --liquid-header-bg: rgba(255, 255, 255, 0.54);
+  --portrait-scrim: rgba(8, 32, 50, 0.3);
 }
 
 html {
@@ -116,6 +341,18 @@ body {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 20px 44px -18px var(--glass-shadow);
+  transition: background-color 300ms ease, border-color 250ms ease, box-shadow 250ms ease;
+}
+
+.apple-liquid-frame {
+  background: var(--liquid-frame-bg);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--liquid-frame-border);
+  box-shadow:
+    inset 0 1px 0 var(--liquid-frame-rim),
+    inset 0 0 18px var(--liquid-frame-glow),
+    0 24px 52px -18px var(--glass-shadow);
   transition: background-color 300ms ease, border-color 250ms ease, box-shadow 250ms ease;
 }
 
@@ -174,6 +411,38 @@ body {
   }
 }
 
+@keyframes frond-sway {
+  0%,
+  100% {
+    transform: rotate(-1.6deg) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: rotate(1.8deg) translate3d(4px, 2px, 0);
+  }
+}
+
+@keyframes kelp-sway {
+  0%,
+  100% {
+    transform: skewX(-2deg) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: skewX(2.4deg) translate3d(3px, 0, 0);
+  }
+}
+
+@keyframes ray-shimmer {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: translateX(0) skewX(-16deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(12px) skewX(-14deg);
+  }
+}
+
 .aurora-orb {
   animation: aurora-drift 18s ease-in-out infinite;
 }
@@ -186,13 +455,42 @@ body {
   animation: gentle-float 2.4s ease-in-out infinite;
 }
 
+.frond-sway {
+  transform-origin: top left;
+  animation: frond-sway 9s ease-in-out infinite;
+}
+
+.frond-sway-right {
+  transform-origin: top right;
+  animation: frond-sway 11s ease-in-out -4s infinite reverse;
+}
+
+.kelp-sway {
+  transform-origin: bottom center;
+  animation: kelp-sway 8s ease-in-out infinite;
+}
+
+.kelp-sway-delayed {
+  transform-origin: bottom center;
+  animation: kelp-sway 10.5s ease-in-out -3.5s infinite reverse;
+}
+
+.ray-shimmer {
+  animation: ray-shimmer 12s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .aurora-orb,
   .aurora-orb-delayed,
-  .gentle-float {
+  .gentle-float,
+  .frond-sway,
+  .frond-sway-right,
+  .kelp-sway,
+  .kelp-sway-delayed,
+  .ray-shimmer {
     animation: none;
   }
 }

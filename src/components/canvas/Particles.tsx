@@ -26,7 +26,7 @@ const SHOOTING_STARS: ShootingStarConfig[] = [
   {
     startX: -8.5,
     startY: 5.5,
-    z: -3.5,
+    z: -4.8,
     speed: 12,
     cycleSeconds: 7.2,
     offsetSeconds: 1.0,
@@ -37,7 +37,7 @@ const SHOOTING_STARS: ShootingStarConfig[] = [
   {
     startX: 8.0,
     startY: 5.0,
-    z: -4.8,
+    z: -6.0,
     speed: 10.5,
     cycleSeconds: 9.8,
     offsetSeconds: 4.2,
@@ -48,7 +48,7 @@ const SHOOTING_STARS: ShootingStarConfig[] = [
   {
     startX: -4.5,
     startY: 6.2,
-    z: -6.0,
+    z: -7.2,
     speed: 11.5,
     cycleSeconds: 12.4,
     offsetSeconds: 7.8,
@@ -275,10 +275,10 @@ export function Particles({
   const midCount = Math.round(count * 0.3)
   const accentCount = Math.max(24, count - farCount - midCount)
 
-  const farPositions = useMemo(() => buildStarPositions(farCount, 32, 22, -4, 14, 1.1), [farCount])
-  const midPositions = useMemo(() => buildStarPositions(midCount, 24, 16, -1.5, 8, 9.4), [midCount])
+  const farPositions = useMemo(() => buildStarPositions(farCount, 32, 22, -6, 14, 1.1), [farCount])
+  const midPositions = useMemo(() => buildStarPositions(midCount, 24, 16, -4, 8, 9.4), [midCount])
   const accentPositions = useMemo(
-    () => buildStarPositions(accentCount, 18, 12, -0.5, 5, 21.7),
+    () => buildStarPositions(accentCount, 18, 12, -2.8, 5, 21.7),
     [accentCount],
   )
 

@@ -3,6 +3,7 @@ import type { RefObject } from 'react'
 import { Float } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import { applyHeroMotion } from './heroMotion'
 
 interface HeroObjectProps {
   scrollProgressRef: RefObject<number>
@@ -19,10 +20,10 @@ const ORBITING_GLASS_NODES: Array<{
   radius: number
   tint: string
 }> = [
-  { orbitRadius: 2.35, yOffset: 0.75, speed: 0.36, phase: 0.4, radius: 0.22, tint: '#bae6fd' },
-  { orbitRadius: 2.2, yOffset: -0.7, speed: -0.3, phase: 2.2, radius: 0.18, tint: '#c7d2fe' },
-  { orbitRadius: 2.0, yOffset: 1.05, speed: 0.26, phase: 3.9, radius: 0.14, tint: '#f9a8d4' },
-  { orbitRadius: 2.1, yOffset: -0.95, speed: -0.24, phase: 5.1, radius: 0.15, tint: '#6ee7b7' },
+  { orbitRadius: 2.35, yOffset: 0.75, speed: 0.54, phase: 0.4, radius: 0.22, tint: '#bae6fd' },
+  { orbitRadius: 2.2, yOffset: -0.7, speed: -0.46, phase: 2.2, radius: 0.18, tint: '#c7d2fe' },
+  { orbitRadius: 2.0, yOffset: 1.05, speed: 0.4, phase: 3.9, radius: 0.14, tint: '#f9a8d4' },
+  { orbitRadius: 2.1, yOffset: -0.95, speed: -0.38, phase: 5.1, radius: 0.15, tint: '#6ee7b7' },
 ]
 
 export function HeroObject({
@@ -48,41 +49,34 @@ export function HeroObject({
     if (!groupRef.current) return
 
     const scroll = scrollProgressRef.current ?? 0
-
-    // Gently shift position & depth on scroll so the sculpture guides the eye down the page
-    const targetX = baseX - scroll * (isWide ? 1.55 : 0)
-    const targetY = baseY + scroll * 0.4
-    const targetZ = -scroll * 1.5
-
-    groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.06)
-    groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 0.06)
-    groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.06)
+    const elapsed = state.clock.elapsedTime
+    applyHeroMotion(groupRef.current, {
+      baseX,
+      baseY,
+      isWide,
+      scroll,
+      elapsed,
+      pointer: state.pointer,
+      reducedMotion,
+    })
 
     if (reducedMotion) return
 
-    const elapsed = state.clock.elapsedTime
-
-    const pointerRotX = -state.pointer.y * 0.24 + scroll * 0.5
-    const pointerRotY = state.pointer.x * 0.34 + scroll * 0.9
-
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, pointerRotX, 0.05)
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, pointerRotY, 0.05)
-
     if (knotRef.current) {
-      knotRef.current.rotation.y += delta * 0.14
-      knotRef.current.rotation.x += delta * 0.07
+      knotRef.current.rotation.y += delta * 0.27
+      knotRef.current.rotation.x += delta * 0.14
     }
     if (coreRef.current) {
-      const pulse = 1 + Math.sin(elapsed * 1.8) * 0.06
+      const pulse = 1 + Math.sin(elapsed * 2.0) * 0.06
       coreRef.current.scale.setScalar(pulse)
     }
     if (outerRingRef.current) {
-      outerRingRef.current.rotation.z -= delta * 0.11
-      outerRingRef.current.rotation.x += delta * 0.045
+      outerRingRef.current.rotation.z -= delta * 0.21
+      outerRingRef.current.rotation.x += delta * 0.1
     }
     if (innerRingRef.current) {
-      innerRingRef.current.rotation.z += delta * 0.17
-      innerRingRef.current.rotation.y -= delta * 0.085
+      innerRingRef.current.rotation.z += delta * 0.31
+      innerRingRef.current.rotation.y -= delta * 0.16
     }
 
     // Smooth orbital motion for the 4 glass pearls
@@ -92,16 +86,16 @@ export function HeroObject({
       const theta = elapsed * node.speed + node.phase
       mesh.position.x = Math.cos(theta) * node.orbitRadius
       mesh.position.z = Math.sin(theta) * (node.orbitRadius * 0.65)
-      mesh.position.y = node.yOffset + Math.sin(elapsed * 0.9 + node.phase) * 0.18
+      mesh.position.y = node.yOffset + Math.sin(elapsed * 1.15 + node.phase) * 0.2
     })
   })
 
   return (
     <group ref={groupRef} position={[baseX, baseY, 0]} scale={baseScale}>
       <Float
-        speed={reducedMotion ? 0 : 1.35}
-        rotationIntensity={reducedMotion ? 0 : 0.22}
-        floatIntensity={reducedMotion ? 0 : 0.42}
+        speed={reducedMotion ? 0 : 1.7}
+        rotationIntensity={reducedMotion ? 0 : 0.28}
+        floatIntensity={reducedMotion ? 0 : 0.45}
       >
         {/* Soft Luminous Inner Core */}
         <mesh ref={coreRef}>

@@ -17,7 +17,7 @@ const SceneCanvas = lazy(() =>
 
 function App() {
   const { progressRef, isScrolled } = useScrollProgress()
-  const { isLight, toggleTheme } = useTheme()
+  const { world, isLight, toggleTheme, setWorld } = useTheme()
 
   return (
     <MotionConfig reducedMotion="user">
@@ -30,16 +30,22 @@ function App() {
           Skip to main content
         </a>
 
-        {/* Isolated 3D Apple Liquid Glass Background (Lazy Loaded for Fast First Paint) */}
+        {/* Isolated Multi-World 3D Background (Lazy Loaded for Fast First Paint) */}
         <Suspense fallback={null}>
-          <SceneCanvas scrollProgressRef={progressRef} isLight={isLight} />
+          <SceneCanvas
+            scrollProgressRef={progressRef}
+            isLight={isLight}
+            world={world}
+          />
         </Suspense>
 
-        {/* Sticky Glass Navigation with Theme Toggle */}
+        {/* Sticky Glass Navigation with Atmosphere World & Mode Toggles */}
         <Navbar
           isScrolled={isScrolled}
           isLight={isLight}
+          world={world}
           onToggleTheme={toggleTheme}
+          onChangeWorld={setWorld}
         />
 
         {/* Foreground Content */}
