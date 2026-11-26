@@ -54,15 +54,15 @@ export function Hero() {
     <>
       <section
         id="top"
-        className="relative mx-auto flex max-w-6xl scroll-mt-0 flex-col justify-center px-4 pb-6 pt-24 sm:px-6 sm:pb-8 sm:pt-28 2xl:max-w-7xl"
+        className="relative mx-auto flex max-w-6xl scroll-mt-0 flex-col justify-center px-4 pb-6 pt-20 sm:px-6 sm:pb-8 sm:pt-24 2xl:max-w-7xl"
       >
-        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-10">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
           {/* Left: Headline, Bio & Clean Actions (Popup View CV, LinkedIn, GitHub) */}
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: 'easeOut' }}
-            className="order-2 space-y-6 lg:order-1 lg:col-span-7"
+            className="order-2 space-y-6 lg:order-1 lg:col-span-7 lg:pt-2"
           >
             <div className="apple-pill inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] sm:text-sm">
               <span className="relative flex h-2 w-2">
@@ -136,7 +136,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
-            className="order-1 flex justify-center lg:order-2 lg:col-span-5 lg:justify-end"
+            className="order-1 flex justify-center lg:order-2 lg:col-span-5 lg:mt-14 lg:justify-end"
           >
             <div
               onMouseMove={handlePortraitMove}
@@ -204,7 +204,7 @@ export function Hero() {
         </div>
 
         {/* Gentle Scroll Indicator */}
-        <div className="mt-5 flex justify-center lg:mt-6">
+        <div className="mt-8 flex justify-center sm:mt-10 lg:mt-12">
           <a
             href="#about"
             aria-label="Scroll to content"

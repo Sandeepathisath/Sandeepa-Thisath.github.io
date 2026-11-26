@@ -1,13 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
-import { Download, Menu, Moon, Sun, X } from 'lucide-react'
+import {
+  Check,
+  ChevronDown,
+  CloudRain,
+  Download,
+  Menu,
+  Moon,
+  Orbit,
+  Sparkles,
+  Sun,
+  Waves,
+  X,
+} from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { profile } from '../../data/profile'
+import type { ThemeWorld } from '../../hooks/useTheme'
 
 interface NavbarProps {
   isScrolled: boolean
   isLight: boolean
+  world: ThemeWorld
   onToggleTheme: () => void
+  onChangeWorld: (world: ThemeWorld) => void
 }
 
 const NAV_ITEMS = [
@@ -17,9 +32,61 @@ const NAV_ITEMS = [
   { id: 'contact', label: 'Contact', href: '#contact' },
 ]
 
-export function Navbar({ isScrolled, isLight, onToggleTheme }: NavbarProps) {
+interface WorldOption {
+  id: ThemeWorld
+  label: string
+  shortLabel: string
+  subtitle: string
+  swatch: string
+  icon: typeof Sparkles
+}
+
+const WORLD_OPTIONS: WorldOption[] = [
+  {
+    id: 'liquid-glass',
+    label: 'Liquid Glass',
+    shortLabel: 'Glass',
+    subtitle: 'Crystal sculpture & stars',
+    swatch: 'linear-gradient(135deg, #8ecae6, #b8c0ff)',
+    icon: Sparkles,
+  },
+  {
+    id: 'galaxy',
+    label: 'Space Galaxy',
+    shortLabel: 'Galaxy',
+    subtitle: 'Cosmic nebula & spiral',
+    swatch: 'linear-gradient(135deg, #c084fc, #38bdf8 60%, #f472b6)',
+    icon: Orbit,
+  },
+  {
+    id: 'jungle',
+    label: 'Green Jungle',
+    shortLabel: 'Jungle',
+    subtitle: 'Lush canopy & gentle rain',
+    swatch: 'linear-gradient(135deg, #34d399, #059669 60%, #38bdf8)',
+    icon: CloudRain,
+  },
+  {
+    id: 'ocean',
+    label: 'Deep Ocean',
+    shortLabel: 'Ocean',
+    subtitle: 'Swimming fish & bubbles',
+    swatch: 'linear-gradient(135deg, #38bdf8, #0284c7 60%, #2dd4bf)',
+    icon: Waves,
+  },
+]
+
+export function Navbar({
+  isScrolled,
+  isLight,
+  world,
+  onToggleTheme,
+  onChangeWorld,
+}: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [worldMenuOpen, setWorldMenuOpen] = useState(false)
   const [activeId, setActiveId] = useState<string | null>(null)
+  const worldPickerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onResize = () => {
@@ -30,14 +97,25 @@ export function Navbar({ isScrolled, isLight, onToggleTheme }: NavbarProps) {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setMenuOpen(false)
+        setWorldMenuOpen(false)
+      }
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (
+        worldPickerRef.current &&
+        !worldPickerRef.current.contains(event.target as Node)
+      ) {
+        setWorldMenuOpen(false)
       }
     }
 
     window.addEventListener('resize', onResize, { passive: true })
     window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('pointerdown', onPointerDown)
     return () => {
       window.removeEventListener('resize', onResize)
       window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('pointerdown', onPointerDown)
     }
   }, [])
 
@@ -89,6 +167,10 @@ export function Navbar({ isScrolled, isLight, onToggleTheme }: NavbarProps) {
     setMenuOpen(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  const activeWorld =
+    WORLD_OPTIONS.find((item) => item.id === world) ?? WORLD_OPTIONS[0]
+  const ActiveWorldIcon = activeWorld.icon
 
   return (
     <header
@@ -144,13 +226,96 @@ export function Navbar({ isScrolled, isLight, onToggleTheme }: NavbarProps) {
           })}
         </ul>
 
-        {/* Right: Theme Toggle + Download CV + Mobile Toggle */}
+        {/* Right: World Theme Switcher + Dark/Light Toggle + Download CV + Mobile Toggle */}
         <div className="flex items-center gap-2">
+          {/* Theme World Switcher (Liquid Glass / Space Galaxy / Green Jungle) */}
+          <div ref={worldPickerRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setWorldMenuOpen((prev) => !prev)}
+              aria-haspopup="menu"
+              aria-expanded={worldMenuOpen}
+              aria-label={`Change theme atmosphere (current: ${activeWorld.label})`}
+              title={`Theme: ${activeWorld.label}`}
+              className="apple-pill inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-xl px-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] active:scale-95 sm:px-3"
+            >
+              <ActiveWorldIcon className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
+              <span className="hidden sm:inline">{activeWorld.shortLabel}</span>
+              <ChevronDown
+                className={`h-3 w-3 text-[var(--text-muted)] transition-transform duration-200 ${
+                  worldMenuOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+
+            <AnimatePresence>
+              {worldMenuOpen && (
+                <motion.div
+                  role="menu"
+                  aria-label="Theme atmosphere options"
+                  initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.97 }}
+                  transition={{ duration: 0.16, ease: 'easeOut' }}
+                  className="apple-glass-strong absolute right-0 top-11 z-50 w-60 overflow-hidden rounded-2xl p-1.5 sm:right-[calc(100%-28px)] sm:w-64"
+                >
+                  <div className="px-2.5 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                    Atmosphere Theme
+                  </div>
+                  <div className="space-y-0.5">
+                    {WORLD_OPTIONS.map((option) => {
+                      const OptionIcon = option.icon
+                      const selected = option.id === world
+                      return (
+                        <button
+                          key={option.id}
+                          type="button"
+                          role="menuitemradio"
+                          aria-checked={selected}
+                          onClick={() => {
+                            onChangeWorld(option.id)
+                            setWorldMenuOpen(false)
+                          }}
+                          className={`flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-xl px-2.5 py-1.5 text-left transition ${
+                            selected
+                              ? 'bg-[var(--pill-hover-bg)] text-[var(--text-primary)] ring-1 ring-[var(--glass-border-hover)]'
+                              : 'text-[var(--text-secondary)] hover:bg-[var(--pill-bg)] hover:text-[var(--text-primary)]'
+                          }`}
+                        >
+                          <span className="flex min-w-0 items-center gap-2.5">
+                            <span
+                              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg shadow-sm ring-1 ring-white/25"
+                              style={{ background: option.swatch }}
+                            >
+                              <OptionIcon className="h-3.5 w-3.5 text-slate-950" />
+                            </span>
+                            <span className="min-w-0">
+                              <span className="block truncate text-xs font-semibold text-[var(--text-primary)]">
+                                {option.label}
+                              </span>
+                              <span className="block truncate text-[11px] text-[var(--text-muted)]">
+                                {option.subtitle}
+                              </span>
+                            </span>
+                          </span>
+                          {selected && (
+                            <Check className="h-3.5 w-3.5 shrink-0 text-[var(--accent-primary)]" />
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Dark / Light Mode Toggle */}
           <button
             type="button"
             onClick={onToggleTheme}
-            aria-label={isLight ? 'Switch to dark theme' : 'Switch to light theme'}
-            title={isLight ? 'Switch to dark theme' : 'Switch to light theme'}
+            aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+            title={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
             className="apple-pill inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] active:scale-95"
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -231,6 +396,38 @@ export function Navbar({ isScrolled, isLight, onToggleTheme }: NavbarProps) {
                   </li>
                 )
               })}
+
+              {/* Quick Theme World Strip inside Mobile Drawer */}
+              <li className="mt-2 border-t border-[var(--divider)] pt-3">
+                <p className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                  Atmosphere Theme
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {WORLD_OPTIONS.map((option) => {
+                    const OptionIcon = option.icon
+                    const selected = option.id === world
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => {
+                          onChangeWorld(option.id)
+                          setMenuOpen(false)
+                        }}
+                        className={`apple-pill flex cursor-pointer items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-medium ${
+                          selected
+                            ? 'ring-1 ring-[var(--accent-primary)] text-[var(--text-primary)]'
+                            : 'text-[var(--text-secondary)]'
+                        }`}
+                      >
+                        <OptionIcon className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
+                        <span>{option.shortLabel}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </li>
+
               <li className="mt-2 border-t border-[var(--divider)] pt-3">
                 <a
                   href={profile.cvUrl}

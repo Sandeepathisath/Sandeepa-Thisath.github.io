@@ -19,13 +19,28 @@
     <script>
       ;(function () {
         try {
-          var saved = localStorage.getItem('portfolio-theme')
-          var theme = saved === 'light' || saved === 'dark' ? saved : 'dark'
+          var savedTheme = localStorage.getItem('portfolio-theme')
+          var theme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'dark'
+          var savedWorld = localStorage.getItem('portfolio-world')
+          var world =
+            savedWorld === 'liquid-glass' ||
+            savedWorld === 'galaxy' ||
+            savedWorld === 'jungle' ||
+            savedWorld === 'ocean'
+              ? savedWorld
+              : 'liquid-glass'
           document.documentElement.setAttribute('data-theme', theme)
+          document.documentElement.setAttribute('data-world', world)
           document.documentElement.style.colorScheme = theme
+          var colors = {
+            'liquid-glass': { dark: '#0c111a', light: '#edf2f8' },
+            galaxy: { dark: '#070514', light: '#f2f0fc' },
+            jungle: { dark: '#05130f', light: '#eaf5ef' },
+            ocean: { dark: '#03111c', light: '#e8f6fb' },
+          }
           var meta = document.querySelector('meta[name="theme-color"]')
-          if (meta) {
-            meta.setAttribute('content', theme === 'light' ? '#edf2f8' : '#0c111a')
+          if (meta && colors[world]) {
+            meta.setAttribute('content', colors[world][theme])
           }
         } catch (e) {}
       })()
