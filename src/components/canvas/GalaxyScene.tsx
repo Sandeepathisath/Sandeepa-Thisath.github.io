@@ -14,9 +14,9 @@ interface GalaxySceneProps {
 }
 
 const GALAXY_MOONS = [
-  { orbitRadius: 2.35, yOffset: 0.42, speed: 0.42, phase: 0.5, radius: 0.16, tint: '#e9d5ff' },
-  { orbitRadius: 2.05, yOffset: -0.5, speed: -0.34, phase: 2.6, radius: 0.13, tint: '#bae6fd' },
-  { orbitRadius: 1.85, yOffset: 0.85, speed: 0.28, phase: 4.5, radius: 0.1, tint: '#fde68a' },
+  { orbitRadius: 2.35, yOffset: 0.42, speed: 0.58, phase: 0.5, radius: 0.16, tint: '#e9d5ff' },
+  { orbitRadius: 2.05, yOffset: -0.5, speed: -0.48, phase: 2.6, radius: 0.13, tint: '#bae6fd' },
+  { orbitRadius: 1.85, yOffset: 0.85, speed: 0.42, phase: 4.5, radius: 0.1, tint: '#fde68a' },
 ]
 
 function seededRandom(seed: number): number {
@@ -163,6 +163,7 @@ export function GalaxyScene({
 
   useFrame((state, delta) => {
     const scroll = scrollProgressRef.current ?? 0
+    const elapsed = state.clock.elapsedTime
 
     if (planetGroupRef.current) {
       applyHeroMotion(planetGroupRef.current, {
@@ -170,6 +171,7 @@ export function GalaxyScene({
         baseY,
         isWide,
         scroll,
+        elapsed,
         pointer: state.pointer,
         reducedMotion,
       })
@@ -185,16 +187,17 @@ export function GalaxyScene({
 
     if (reducedMotion) return
 
-    const elapsed = state.clock.elapsedTime
-
     if (planetRef.current) {
-      planetRef.current.rotation.y += delta * 0.16
+      planetRef.current.rotation.y += delta * 0.27
+      planetRef.current.rotation.x += delta * 0.09
     }
     if (mainRingRef.current) {
-      mainRingRef.current.rotation.z += delta * 0.12
+      mainRingRef.current.rotation.z += delta * 0.22
+      mainRingRef.current.rotation.x += delta * 0.08
     }
     if (outerRingRef.current) {
-      outerRingRef.current.rotation.z -= delta * 0.08
+      outerRingRef.current.rotation.z -= delta * 0.17
+      outerRingRef.current.rotation.y += delta * 0.1
     }
 
     GALAXY_MOONS.forEach((moon, index) => {
@@ -203,14 +206,14 @@ export function GalaxyScene({
       const theta = elapsed * moon.speed + moon.phase
       mesh.position.x = Math.cos(theta) * moon.orbitRadius
       mesh.position.z = Math.sin(theta) * (moon.orbitRadius * 0.72)
-      mesh.position.y = moon.yOffset + Math.sin(elapsed * 0.8 + moon.phase) * 0.15
+      mesh.position.y = moon.yOffset + Math.sin(elapsed * 1.1 + moon.phase) * 0.19
     })
 
     if (spiralRef.current) {
-      spiralRef.current.rotation.y += delta * 0.04
+      spiralRef.current.rotation.y += delta * 0.07
     }
     if (starFieldRef.current) {
-      starFieldRef.current.rotation.y -= delta * 0.01
+      starFieldRef.current.rotation.y -= delta * 0.018
     }
   })
 
@@ -261,9 +264,9 @@ export function GalaxyScene({
       {/* Ringed Cosmic Crystal Planet Centerpiece */}
       <group ref={planetGroupRef} position={[baseX, baseY, 0]} scale={baseScale}>
         <Float
-          speed={reducedMotion ? 0 : 1.25}
-          rotationIntensity={reducedMotion ? 0 : 0.2}
-          floatIntensity={reducedMotion ? 0 : 0.36}
+          speed={reducedMotion ? 0 : 1.65}
+          rotationIntensity={reducedMotion ? 0 : 0.28}
+          floatIntensity={reducedMotion ? 0 : 0.45}
         >
           {/* Glowing Galactic Core */}
           <mesh>

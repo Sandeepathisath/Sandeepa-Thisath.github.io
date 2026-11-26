@@ -13,11 +13,11 @@ interface JungleSceneProps {
 }
 
 const DEWDROP_NODES = [
-  { orbitRadius: 2.25, yOffset: 0.65, speed: 0.34, phase: 0.3, radius: 0.2, tint: '#6ee7b7' },
-  { orbitRadius: 2.05, yOffset: -0.65, speed: -0.28, phase: 1.9, radius: 0.16, tint: '#7dd3fc' },
-  { orbitRadius: 1.85, yOffset: 0.95, speed: 0.25, phase: 3.6, radius: 0.14, tint: '#a7f3d0' },
-  { orbitRadius: 2.15, yOffset: -0.9, speed: -0.22, phase: 5.0, radius: 0.15, tint: '#5eead4' },
-  { orbitRadius: 1.65, yOffset: 0.2, speed: 0.38, phase: 2.7, radius: 0.11, tint: '#bae6fd' },
+  { orbitRadius: 2.25, yOffset: 0.65, speed: 0.52, phase: 0.3, radius: 0.2, tint: '#6ee7b7' },
+  { orbitRadius: 2.05, yOffset: -0.65, speed: -0.44, phase: 1.9, radius: 0.16, tint: '#7dd3fc' },
+  { orbitRadius: 1.85, yOffset: 0.95, speed: 0.38, phase: 3.6, radius: 0.14, tint: '#a7f3d0' },
+  { orbitRadius: 2.15, yOffset: -0.9, speed: -0.35, phase: 5.0, radius: 0.15, tint: '#5eead4' },
+  { orbitRadius: 1.65, yOffset: 0.2, speed: 0.58, phase: 2.7, radius: 0.11, tint: '#bae6fd' },
 ]
 
 export function JungleScene({
@@ -43,34 +43,34 @@ export function JungleScene({
     if (!groupRef.current) return
 
     const scroll = scrollProgressRef.current ?? 0
+    const elapsed = state.clock.elapsedTime
     applyHeroMotion(groupRef.current, {
       baseX,
       baseY,
       isWide,
       scroll,
+      elapsed,
       pointer: state.pointer,
       reducedMotion,
     })
 
     if (reducedMotion) return
 
-    const elapsed = state.clock.elapsedTime
-
     if (prismRef.current) {
-      prismRef.current.rotation.y += delta * 0.18
-      prismRef.current.rotation.z += delta * 0.05
+      prismRef.current.rotation.y += delta * 0.3
+      prismRef.current.rotation.z += delta * 0.09
     }
     if (coreRef.current) {
-      const pulse = 1 + Math.sin(elapsed * 1.6) * 0.06
+      const pulse = 1 + Math.sin(elapsed * 1.8) * 0.06
       coreRef.current.scale.setScalar(pulse)
     }
     if (outerHaloRef.current) {
-      outerHaloRef.current.rotation.z -= delta * 0.1
-      outerHaloRef.current.rotation.x += delta * 0.04
+      outerHaloRef.current.rotation.z -= delta * 0.2
+      outerHaloRef.current.rotation.x += delta * 0.09
     }
     if (innerHaloRef.current) {
-      innerHaloRef.current.rotation.z += delta * 0.15
-      innerHaloRef.current.rotation.y -= delta * 0.08
+      innerHaloRef.current.rotation.z += delta * 0.28
+      innerHaloRef.current.rotation.y -= delta * 0.15
     }
 
     DEWDROP_NODES.forEach((drop, index) => {
@@ -79,16 +79,16 @@ export function JungleScene({
       const theta = elapsed * drop.speed + drop.phase
       mesh.position.x = Math.cos(theta) * drop.orbitRadius
       mesh.position.z = Math.sin(theta) * (drop.orbitRadius * 0.65)
-      mesh.position.y = drop.yOffset + Math.sin(elapsed * 1.05 + drop.phase) * 0.22
+      mesh.position.y = drop.yOffset + Math.sin(elapsed * 1.2 + drop.phase) * 0.22
     })
   })
 
   return (
     <group ref={groupRef} position={[baseX, baseY, 0]} scale={baseScale}>
       <Float
-        speed={reducedMotion ? 0 : 1.3}
-        rotationIntensity={reducedMotion ? 0 : 0.2}
-        floatIntensity={reducedMotion ? 0 : 0.42}
+        speed={reducedMotion ? 0 : 1.65}
+        rotationIntensity={reducedMotion ? 0 : 0.28}
+        floatIntensity={reducedMotion ? 0 : 0.45}
       >
         {/* Soft Bioluminescent Emerald Core */}
         <mesh ref={coreRef}>

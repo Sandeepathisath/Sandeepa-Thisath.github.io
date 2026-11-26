@@ -13,10 +13,10 @@ interface OceanSceneProps {
 }
 
 const AQUA_PEARLS = [
-  { orbitRadius: 2.3, yOffset: 0.72, speed: 0.32, phase: 0.2, radius: 0.2, tint: '#7dd3fc' },
-  { orbitRadius: 2.0, yOffset: -0.68, speed: -0.28, phase: 2.1, radius: 0.16, tint: '#5eead4' },
-  { orbitRadius: 1.85, yOffset: 0.96, speed: 0.25, phase: 3.8, radius: 0.13, tint: '#bae6fd' },
-  { orbitRadius: 2.15, yOffset: -0.92, speed: -0.22, phase: 5.2, radius: 0.15, tint: '#99f6e4' },
+  { orbitRadius: 2.3, yOffset: 0.72, speed: 0.5, phase: 0.2, radius: 0.2, tint: '#7dd3fc' },
+  { orbitRadius: 2.0, yOffset: -0.68, speed: -0.44, phase: 2.1, radius: 0.16, tint: '#5eead4' },
+  { orbitRadius: 1.85, yOffset: 0.96, speed: 0.38, phase: 3.8, radius: 0.13, tint: '#bae6fd' },
+  { orbitRadius: 2.15, yOffset: -0.92, speed: -0.35, phase: 5.2, radius: 0.15, tint: '#99f6e4' },
 ]
 
 export function OceanScene({
@@ -42,34 +42,34 @@ export function OceanScene({
     if (!groupRef.current) return
 
     const scroll = scrollProgressRef.current ?? 0
+    const elapsed = state.clock.elapsedTime
     applyHeroMotion(groupRef.current, {
       baseX,
       baseY,
       isWide,
       scroll,
+      elapsed,
       pointer: state.pointer,
       reducedMotion,
     })
 
     if (reducedMotion) return
 
-    const elapsed = state.clock.elapsedTime
-
     if (shellRef.current) {
-      shellRef.current.rotation.y += delta * 0.16
-      shellRef.current.rotation.x += delta * 0.06
+      shellRef.current.rotation.y += delta * 0.28
+      shellRef.current.rotation.x += delta * 0.11
     }
     if (coreRef.current) {
-      const pulse = 1 + Math.sin(elapsed * 1.6) * 0.06
+      const pulse = 1 + Math.sin(elapsed * 1.8) * 0.06
       coreRef.current.scale.setScalar(pulse)
     }
     if (outerRingRef.current) {
-      outerRingRef.current.rotation.z -= delta * 0.12
-      outerRingRef.current.rotation.x += delta * 0.04
+      outerRingRef.current.rotation.z -= delta * 0.22
+      outerRingRef.current.rotation.x += delta * 0.09
     }
     if (innerRingRef.current) {
-      innerRingRef.current.rotation.z += delta * 0.16
-      innerRingRef.current.rotation.y -= delta * 0.08
+      innerRingRef.current.rotation.z += delta * 0.3
+      innerRingRef.current.rotation.y -= delta * 0.15
     }
 
     AQUA_PEARLS.forEach((pearl, index) => {
@@ -78,16 +78,16 @@ export function OceanScene({
       const theta = elapsed * pearl.speed + pearl.phase
       mesh.position.x = Math.cos(theta) * pearl.orbitRadius
       mesh.position.z = Math.sin(theta) * (pearl.orbitRadius * 0.65)
-      mesh.position.y = pearl.yOffset + Math.sin(elapsed * 0.95 + pearl.phase) * 0.2
+      mesh.position.y = pearl.yOffset + Math.sin(elapsed * 1.15 + pearl.phase) * 0.2
     })
   })
 
   return (
     <group ref={groupRef} position={[baseX, baseY, 0]} scale={baseScale}>
       <Float
-        speed={reducedMotion ? 0 : 1.25}
-        rotationIntensity={reducedMotion ? 0 : 0.22}
-        floatIntensity={reducedMotion ? 0 : 0.44}
+        speed={reducedMotion ? 0 : 1.65}
+        rotationIntensity={reducedMotion ? 0 : 0.28}
+        floatIntensity={reducedMotion ? 0 : 0.45}
       >
         {/* Bioluminescent Aqua Core */}
         <mesh ref={coreRef}>
