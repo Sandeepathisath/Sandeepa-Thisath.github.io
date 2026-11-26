@@ -4,6 +4,7 @@ import { ChevronDown, Eye, MapPin } from 'lucide-react'
 import { motion } from 'motion/react'
 import { profile } from '../../data/profile'
 import { GitHubIcon, LinkedInIcon } from '../ui/BrandIcons'
+import { ProtectedPortrait } from '../ui/ProtectedPortrait'
 
 const loadCvModal = () => import('../ui/CvModal')
 const CvModal = lazy(() => loadCvModal().then((m) => ({ default: m.CvModal })))
@@ -140,8 +141,10 @@ export function Hero() {
             <div
               onMouseMove={handlePortraitMove}
               onMouseLeave={resetPortraitTilt}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
               style={{ perspective: '1000px' }}
-              className="relative w-full max-w-[270px] sm:max-w-[310px] lg:max-w-[335px]"
+              className="relative w-full max-w-[270px] select-none sm:max-w-[310px] lg:max-w-[335px]"
             >
               {/* Soft Ambient Frame Halo */}
               <div
@@ -171,22 +174,21 @@ export function Hero() {
                 />
 
                 <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] ring-1 ring-[var(--glass-border)]">
-                  <img
+                  <ProtectedPortrait
                     src={profile.avatar}
                     alt={`${profile.name} portrait`}
-                    className="h-full w-full object-cover object-top"
                   />
 
                   {/* Subtle bottom scrim to keep location chip readable on any theme */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-28"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28"
                     style={{
                       background: 'linear-gradient(to top, var(--portrait-scrim), transparent)',
                     }}
                   />
 
-                  <div className="apple-glass-strong absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-2xl px-3 py-2 text-xs text-[var(--text-secondary)]">
+                  <div className="apple-glass-strong absolute bottom-3 left-3 right-3 z-20 flex items-center justify-between rounded-2xl px-3 py-2 text-xs text-[var(--text-secondary)]">
                     <span className="inline-flex items-center gap-1.5">
                       <MapPin className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
                       <span className="font-medium text-[var(--text-primary)]">

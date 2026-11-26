@@ -30,6 +30,12 @@
   --surface-subtle: rgba(15, 23, 42, 0.68);
   --divider: rgba(255, 255, 255, 0.11);
   --modal-backdrop: rgba(0, 0, 0, 0.75);
+  --liquid-backdrop: rgba(8, 12, 20, 0.6);
+  --liquid-frame-bg: rgba(18, 25, 38, 0.58);
+  --liquid-frame-border: rgba(255, 255, 255, 0.18);
+  --liquid-frame-rim: rgba(255, 255, 255, 0.22);
+  --liquid-frame-glow: rgba(142, 202, 230, 0.05);
+  --liquid-header-bg: rgba(18, 25, 38, 0.45);
   --glare-color: rgba(255, 255, 255, 0.15);
   --portrait-scrim: rgba(12, 17, 26, 0.58);
   --status-success-text: #a7f3d0;
@@ -65,6 +71,12 @@
   --surface-subtle: rgba(226, 232, 240, 0.72);
   --divider: rgba(15, 23, 42, 0.1);
   --modal-backdrop: rgba(15, 23, 42, 0.44);
+  --liquid-backdrop: rgba(15, 23, 42, 0.34);
+  --liquid-frame-bg: rgba(240, 246, 252, 0.72);
+  --liquid-frame-border: rgba(15, 23, 42, 0.13);
+  --liquid-frame-rim: rgba(255, 255, 255, 0.85);
+  --liquid-frame-glow: rgba(2, 132, 199, 0.04);
+  --liquid-header-bg: rgba(255, 255, 255, 0.52);
   --glare-color: rgba(255, 255, 255, 0.32);
   --portrait-scrim: rgba(15, 23, 42, 0.28);
   --status-success-text: #065f46;
@@ -116,6 +128,18 @@ body {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 20px 44px -18px var(--glass-shadow);
+  transition: background-color 300ms ease, border-color 250ms ease, box-shadow 250ms ease;
+}
+
+.apple-liquid-frame {
+  background: var(--liquid-frame-bg);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--liquid-frame-border);
+  box-shadow:
+    inset 0 1px 0 var(--liquid-frame-rim),
+    inset 0 0 18px var(--liquid-frame-glow),
+    0 24px 52px -18px var(--glass-shadow);
   transition: background-color 300ms ease, border-color 250ms ease, box-shadow 250ms ease;
 }
 
