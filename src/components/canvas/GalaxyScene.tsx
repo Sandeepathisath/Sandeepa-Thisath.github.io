@@ -3,6 +3,7 @@ import type { RefObject } from 'react'
 import { Float } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import { applyHeroMotion } from './heroMotion'
 
 interface GalaxySceneProps {
   scrollProgressRef: RefObject<number>
@@ -164,25 +165,14 @@ export function GalaxyScene({
     const scroll = scrollProgressRef.current ?? 0
 
     if (planetGroupRef.current) {
-      const targetX = baseX - scroll * (isWide ? 1.55 : 0)
-      const targetY = baseY + scroll * 0.4
-      const targetZ = -scroll * 1.5
-
-      planetGroupRef.current.position.x = THREE.MathUtils.lerp(
-        planetGroupRef.current.position.x,
-        targetX,
-        0.06,
-      )
-      planetGroupRef.current.position.y = THREE.MathUtils.lerp(
-        planetGroupRef.current.position.y,
-        targetY,
-        0.06,
-      )
-      planetGroupRef.current.position.z = THREE.MathUtils.lerp(
-        planetGroupRef.current.position.z,
-        targetZ,
-        0.06,
-      )
+      applyHeroMotion(planetGroupRef.current, {
+        baseX,
+        baseY,
+        isWide,
+        scroll,
+        pointer: state.pointer,
+        reducedMotion,
+      })
     }
 
     if (galaxyGroupRef.current) {
@@ -196,21 +186,6 @@ export function GalaxyScene({
     if (reducedMotion) return
 
     const elapsed = state.clock.elapsedTime
-
-    if (planetGroupRef.current) {
-      const pointerRotX = -state.pointer.y * 0.22 + scroll * 0.45
-      const pointerRotY = state.pointer.x * 0.3 + scroll * 0.85
-      planetGroupRef.current.rotation.x = THREE.MathUtils.lerp(
-        planetGroupRef.current.rotation.x,
-        pointerRotX,
-        0.05,
-      )
-      planetGroupRef.current.rotation.y = THREE.MathUtils.lerp(
-        planetGroupRef.current.rotation.y,
-        pointerRotY,
-        0.05,
-      )
-    }
 
     if (planetRef.current) {
       planetRef.current.rotation.y += delta * 0.16
@@ -244,7 +219,7 @@ export function GalaxyScene({
   return (
     <>
       {/* Background Spiral Galaxy & Deep Space Field */}
-      <group ref={galaxyGroupRef} position={[-1.4, -0.3, -4.5]} rotation={[0.42, 0.12, -0.24]}>
+      <group ref={galaxyGroupRef} position={[-1.4, -0.3, -5.8]} rotation={[0.42, 0.12, -0.24]}>
         <points ref={spiralRef}>
           <bufferGeometry>
             <bufferAttribute attach="attributes-position" args={[spiralData.positions, 3]} />

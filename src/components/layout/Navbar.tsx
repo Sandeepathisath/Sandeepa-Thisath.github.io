@@ -46,7 +46,7 @@ const WORLD_OPTIONS: WorldOption[] = [
     id: 'liquid-glass',
     label: 'Liquid Glass',
     shortLabel: 'Glass',
-    subtitle: 'Crystal sculpture & stars',
+    subtitle: 'Crystal sculpture & fireflies',
     swatch: 'linear-gradient(135deg, #8ecae6, #b8c0ff)',
     icon: Sparkles,
   },

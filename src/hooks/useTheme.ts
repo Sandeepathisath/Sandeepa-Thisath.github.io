@@ -27,7 +27,7 @@ function getInitialTheme(): ThemeMode {
 }
 
 function getInitialWorld(): ThemeWorld {
-  if (typeof window === 'undefined') return 'liquid-glass'
+  if (typeof window === 'undefined') return 'galaxy'
   try {
     const saved = window.localStorage.getItem(WORLD_STORAGE_KEY)
     if (
@@ -41,7 +41,7 @@ function getInitialWorld(): ThemeWorld {
   } catch {
     // Ignore storage read errors in restricted environments
   }
-  return 'liquid-glass'
+  return 'galaxy'
 }
 
 export function useTheme() {

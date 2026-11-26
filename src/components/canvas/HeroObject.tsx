@@ -3,6 +3,7 @@ import type { RefObject } from 'react'
 import { Float } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import { applyHeroMotion } from './heroMotion'
 
 interface HeroObjectProps {
   scrollProgressRef: RefObject<number>
@@ -48,25 +49,18 @@ export function HeroObject({
     if (!groupRef.current) return
 
     const scroll = scrollProgressRef.current ?? 0
-
-    // Gently shift position & depth on scroll so the sculpture guides the eye down the page
-    const targetX = baseX - scroll * (isWide ? 1.55 : 0)
-    const targetY = baseY + scroll * 0.4
-    const targetZ = -scroll * 1.5
-
-    groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.06)
-    groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 0.06)
-    groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.06)
+    applyHeroMotion(groupRef.current, {
+      baseX,
+      baseY,
+      isWide,
+      scroll,
+      pointer: state.pointer,
+      reducedMotion,
+    })
 
     if (reducedMotion) return
 
     const elapsed = state.clock.elapsedTime
-
-    const pointerRotX = -state.pointer.y * 0.24 + scroll * 0.5
-    const pointerRotY = state.pointer.x * 0.34 + scroll * 0.9
-
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, pointerRotX, 0.05)
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, pointerRotY, 0.05)
 
     if (knotRef.current) {
       knotRef.current.rotation.y += delta * 0.14

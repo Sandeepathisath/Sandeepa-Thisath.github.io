@@ -4,11 +4,10 @@ import { Environment, Lightformer } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import type { ThemeWorld } from '../../hooks/useTheme'
-import { HeroObject } from './HeroObject'
-import { Particles } from './Particles'
+import { GalaxyScene } from './GalaxyScene'
 
-const GalaxyScene = lazy(() =>
-  import('./GalaxyScene').then((m) => ({ default: m.GalaxyScene })),
+const HeroObject = lazy(() =>
+  import('./HeroObject').then((m) => ({ default: m.HeroObject })),
 )
 const JungleScene = lazy(() =>
   import('./JungleScene').then((m) => ({ default: m.JungleScene })),
@@ -28,6 +27,9 @@ const OceanBackdrop = lazy(() =>
 const OceanLifeCanvas = lazy(() =>
   import('./OceanLifeCanvas').then((m) => ({ default: m.OceanLifeCanvas })),
 )
+const GlassFirefliesCanvas = lazy(() =>
+  import('./GlassFirefliesCanvas').then((m) => ({ default: m.GlassFirefliesCanvas })),
+)
 
 interface SceneCanvasProps {
   scrollProgressRef: RefObject<number>
@@ -38,7 +40,7 @@ interface SceneCanvasProps {
 export function SceneCanvas({
   scrollProgressRef,
   isLight = false,
-  world = 'liquid-glass',
+  world = 'galaxy',
 }: SceneCanvasProps) {
   const { prefersReducedMotion, isCompactViewport, lowPower } = useReducedMotion()
   const [canvasReady, setCanvasReady] = useState(false)
@@ -142,7 +144,7 @@ export function SceneCanvas({
       )}
 
       <div
-        className={`h-full w-full transition-opacity duration-700 ${
+        className={`relative z-[2] h-full w-full transition-opacity duration-700 ${
           canvasReady ? 'opacity-100' : 'opacity-0'
         }`}
       >
@@ -201,20 +203,12 @@ export function SceneCanvas({
 
           <Suspense fallback={null}>
             {world === 'liquid-glass' && (
-              <>
-                <Particles
-                  count={isCompactViewport ? 160 : 320}
-                  reducedMotion={prefersReducedMotion}
-                  isLight={isLight}
-                  scrollProgressRef={scrollProgressRef}
-                />
-                <HeroObject
-                  scrollProgressRef={scrollProgressRef}
-                  reducedMotion={prefersReducedMotion}
-                  lowPower={lowPower}
-                  isLight={isLight}
-                />
-              </>
+              <HeroObject
+                scrollProgressRef={scrollProgressRef}
+                reducedMotion={prefersReducedMotion}
+                lowPower={lowPower}
+                isLight={isLight}
+              />
             )}
 
             {world === 'galaxy' && (
@@ -247,6 +241,17 @@ export function SceneCanvas({
           </Suspense>
         </Canvas>
       </div>
+
+      {/* Live 60fps Flying Fireflies for Liquid Glass Theme (Behind 3D Sculpture) */}
+      {world === 'liquid-glass' && (
+        <Suspense fallback={null}>
+          <GlassFirefliesCanvas
+            isLight={isLight}
+            reducedMotion={prefersReducedMotion}
+            isCompactViewport={isCompactViewport}
+          />
+        </Suspense>
+      )}
 
       {/* Live 60fps Rainforest Rain Streaks, Splashes & Fireflies */}
       {world === 'jungle' && (
