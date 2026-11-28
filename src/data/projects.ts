@@ -10,8 +10,8 @@ export const projects: Project[] = [
     title: 'Algorithm Visualizer Studio',
     tagline: 'C# Windows Forms Sorting & BFS Pathfinding Desktop App',
     shortDescription:
-      'An interactive 2nd-year C# Windows Forms desktop app visualizing Insertion Sort, Merge Sort with live temp buffers, and BFS maze pathfinding with step-by-step code tracing.',
-    role: 'Desktop App Developer',
+      'A 2nd-year C# desktop app that visualizes Insertion Sort, Merge Sort, and BFS grid pathfinding step by step.',
+    role: 'Desktop Appplication Development',
     year: '2026',
     status: 'featured',
     tech: ['C#', '.NET Framework 4.7.2', 'Windows Forms', 'GDI+ Graphics', 'Visual Studio'],
@@ -21,11 +21,11 @@ export const projects: Project[] = [
     liveUrl: '',
     details: {
       overview:
-        'Algorithm Visualizer Studio is a desktop application I created during my 2nd year studying C# to better understand and visualize how classic algorithms work step by step. Building on my own programming knowledge with AI assistance along the way—and later partnering with Gemini 4 Hydrogen to redesign the interface and expand the user experience—I took the project from a basic algorithm prototype into a modern, interactive desktop studio.',
+        'Algorithm Visualizer Studio is a desktop app I built during my 2nd year studying C# to see how classic algorithms work step by step. Building on my own C# knowledge with AI assistance along the way, I later worked with Gemini 4 Hydrogen to redesign the layout and turn an early prototype into a clean desktop application.',
       problem:
-        'Studying classic sorting and graph-traversal algorithms from static code alone makes it harder to trace array swaps, see how recursive Merge Sort uses temporary buffer memory, or watch Breadth-First Search explore cells around obstacles.',
+        'Reading sorting or pathfinding algorithms only from static code makes it harder to see how values swap, how Merge Sort uses a temporary buffer, or how Breadth-First Search spreads around walls on a grid.',
       solution:
-        'Engineered directly with C#, .NET Framework 4.7.2, Windows Forms, and custom GDI+ (System.Drawing) graphics with zero external UI libraries—delivering responsive custom rendering, live step-by-step code line highlighting, Dark and Light themes (examples shown in Screenshots below), keyboard shortcuts, pop-out windows, and persistent user preferences.',
+        'I built the app using C#, .NET Framework 4.7.2, Windows Forms, and custom GDI+ (System.Drawing) graphics in Visual Studio with no external UI libraries. It animates each step alongside live counters, matching code line highlights, Dark and Light themes (shown in the screenshots below), keyboard shortcuts, pop-out windows, and saved settings.',
       highlights: [
         {
           label: 'Project Type',
@@ -34,48 +34,48 @@ export const projects: Project[] = [
         {
           label: 'How It Was Built',
           value:
-            'Designed and directed using my C# knowledge alongside AI assistance, with full UI/UX modernization and feature expansion co-developed using Gemini 4 Hydrogen',
+            'Built using my own C# knowledge with AI assistance along the way, then redesigned and expanded with Gemini 4 Hydrogen.',
         },
         {
           label: 'Themes & Modes',
           value:
-            'Supports both Dark Mode and Light Mode (examples shown in the gallery below), plus pop-out windows and saved settings',
+            'Includes Dark Mode and Light Mode (examples shown below), keyboard shortcuts, pop-out windows, and saved settings.',
         },
         {
           label: 'Built With',
           value:
-            'C#, .NET Framework 4.7.2, Windows Forms, and custom GDI+ (System.Drawing) graphics crafted in Visual Studio with no external UI libraries',
+            'C#, .NET Framework 4.7.2, Windows Forms, and custom GDI+ graphics in Visual Studio (no external UI libraries).',
         },
       ],
       videoUrl: 'https://drive.google.com/file/d/15eKL-q89sxrHDXLs7SzUUyPWhOXzwAVb/view?usp=sharing',
-      videoTitle: 'Walkthrough Demo — Sorting Lab & Pathfinding Studio',
+      videoTitle: 'Walkthrough Demo: Sorting Lab & Pathfinding Studio',
       videoPoster: assetPath('images/projects/algorithm-visualizer/sorting-dark.png'),
       features: [
-        'Sorting Lab (Insertion Sort & Merge Sort): Switch data patterns (random, nearly sorted, reversed, few unique values), adjust array size and animation speed live, pause or step one move at a time, and replay the exact same array to compare algorithms.',
-        'Merge Sort Live Buffer & Code Trace: Highlights active bar comparisons and swaps, renders Merge Sort’s temporary buffer along the bottom, tracks live comparison/step counters, and highlights the matching line of code as it executes.',
-        'Pathfinding Lab (Breadth-First Search): Draw walls directly on the grid with your mouse, drag Start and Target points anywhere, generate random obstacles or solvable mazes in one click, and watch BFS expand wave by wave until animating the shortest path.',
-        'Dark & Light Themes + Desktop Polish: Switch cleanly between Dark Mode and Light Mode (examples shown below), use keyboard shortcuts, open pop-out studio views, and automatically retain your last settings.',
+        'Sorting Lab: Watch Insertion Sort and Merge Sort organize bars step by step with random, nearly sorted, reversed, or few-unique data, live size and speed sliders, pause/step controls, and exact-array replay.',
+        'Buffer & Code Trace: Highlights which bars are being compared or swapped, displays Merge Sort’s temporary buffer at the bottom, counts comparisons and steps, and highlights the active line of code as it runs.',
+        'Pathfinding Lab: Draw walls directly on the grid with your mouse, drag the Start and Target points anywhere, generate random walls or solvable mazes in one click, and watch BFS expand wave by wave until showing the shortest path.',
+        'Dark & Light Modes: Switch easily between Dark Mode and Light Mode (examples shown in Screenshots), use keyboard shortcuts, open pop-out windows, and keep your last settings automatically.',
       ],
       gallery: [
         {
           src: assetPath('images/projects/algorithm-visualizer/sorting-dark.png'),
           badge: 'Dark Mode',
-          caption: 'Sorting Lab (Dark Mode) — Insertion Sort bars, live metrics & execution code trace',
+          caption: 'Sorting Lab (Dark Mode): Insertion Sort bars, live counters, and code trace',
         },
         {
           src: assetPath('images/projects/algorithm-visualizer/pathfinding-dark.png'),
           badge: 'Dark Mode',
-          caption: 'Pathfinding Lab (Dark Mode) — BFS wavefront & 34-hop shortest path trace',
+          caption: 'Pathfinding Lab (Dark Mode): BFS wave expansion and show shortest path',
         },
         {
           src: assetPath('images/projects/algorithm-visualizer/sorting-light.png'),
           badge: 'Light Mode',
-          caption: 'Sorting Lab (Light Mode) — Completed 52-bar sort & summary metrics',
+          caption: 'Sorting Lab (Light Mode): Completed bar sorting run with final summary stats',
         },
         {
           src: assetPath('images/projects/algorithm-visualizer/pathfinding-light.png'),
           badge: 'Light Mode',
-          caption: 'Pathfinding Lab (Light Mode) — Maze walls & expanding BFS frontier wave',
+          caption: 'Pathfinding Lab (Light Mode): Custom maze walls and active BFS wave',
         },
       ],
     },

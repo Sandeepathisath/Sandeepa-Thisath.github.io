@@ -1,5 +1,13 @@
 import type { ReactNode } from 'react'
-import { Code2, Container, Database, Globe, Server } from 'lucide-react'
+import {
+  AppWindow,
+  Code2,
+  Container,
+  Database,
+  Globe,
+  Layers,
+  Server,
+} from 'lucide-react'
 
 interface TechIconProps {
   name: string
@@ -99,6 +107,23 @@ function renderBrandSvg(key: string): ReactNode | null {
         <path d="M11 10.2a2.6 2.6 0 1 0 0 3.6M14.5 9.8v4.4M16.5 9.8v4.4M13.5 11.2h4M13.5 12.8h4" />
       </svg>
     )
+  }
+
+  if (key.includes('visual studio') && !key.includes('code')) {
+    return (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 text-[#8b5cf6]" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round">
+        <path d="M17 3.5 20.5 5.3v13.4L17 20.5 6.5 12 17 3.5z" fill="currentColor" fillOpacity="0.18" />
+        <path d="m3.5 8 13.5 9.2M3.5 16 17 6.8" strokeLinecap="round" />
+      </svg>
+    )
+  }
+
+  if (key.includes('windows forms') || key.includes('winforms')) {
+    return <AppWindow className="h-4 w-4 text-[#38bdf8]" />
+  }
+
+  if (key.includes('gdi') || key.includes('graphics')) {
+    return <Layers className="h-4 w-4 text-[#f472b6]" />
   }
 
   if (key.includes('mysql') || key.includes('sqlite') || key.includes('postgres')) {
